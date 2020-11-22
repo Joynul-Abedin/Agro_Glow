@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Delete User</title>
+</head>
+<body>
+	
+	<form method="post">
+		<fieldset>
+			<legend>Delete User</legend>
+			<table>
+				<tr>
+					<td>Name</td>
+					<td><%=data[0].uname%></td>
+				</tr>
+				<tr>
+					<td>Email</td>
+					<td><%=data[0].email%></td>
+				</tr>
+				<tr>
+					<td>Password</td>
+					<td><%=data[0].pass%></td>
+				</tr>
+				<tr>
+					<td>Dept</td>
+					<td><%=data[0].dept%></td>
+                </tr>
+                <tr>
+                    <td><h2>Are You Sure??</h2></td>
+                </tr>
+				<tr>
+					<td><input type="submit" name="edit" value="Delete"></td>
+				</tr>
+			</table>
+		</fieldset>
+	</form>
+
+</body>
+</html>
