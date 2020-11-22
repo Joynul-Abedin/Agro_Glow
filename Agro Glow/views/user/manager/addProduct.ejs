@@ -46,8 +46,8 @@
                 >
                 <select name="category" class="custom-select tm-select-accounts"
                 id="category">
+                <option selected >Select Category</option>
                   <% for(var i = 0; i < categoryInformation.length ; i++) { %>
-                    <option selected >Select Category</option>
                     <option value='<%= categoryInformation[i].catName %>'><%= categoryInformation[i].catName %></option>
                   <% } %>
                 </select>

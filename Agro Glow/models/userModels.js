@@ -76,6 +76,20 @@ module.exports ={
         })
     },
 
+    editCategory : function(category, callback){
+        var sql = "update categories set catName = '"+category.catName+"' where id = '"+category.id+"'"
+        db.execute(sql, function(status){
+            callback(status);
+        })
+    },
+
+    deleteCategory : function(category, callback){
+        var sql = "delete from categories where id = '"+category.id+"'"
+        db.execute(sql, function(status){
+            callback(status);
+        })
+    },
+
     getAllcategories : function(callback){
         var sql = 'select * from categories';
         db.getResults(sql, function(results){
@@ -90,8 +104,8 @@ module.exports ={
         })
     },
 
-    getCategory : function(catName, callback){
-        var sql = 'select * from categories where catName="'+catName+'"';
+    getCategory : function(catId, callback){
+        var sql = 'select * from categories where id="'+catId+'"';
         db.getResults(sql, function(results){
             callback(results);
         })
@@ -204,22 +218,15 @@ module.exports ={
         })
     },
 
-    // createUser : function(newUser, callback){
-    //     var sql = "insert into user values ('"+newUser.uname+"', '"+newUser.email+"', '"+newUser.pass+"', '"+newUser.dept+"')";
-    //     db.execute(sql, function(status){
-    //         callback(status);
-    //     })
-    // },
-
-    // editUser : function(user, callback){
-    //     var sql = "update user set email ='"+user.email+"', pass ='"+user.pass+"', dept ='"+user.dept+"' where uname ='"+user.uname+"'"
-    //     db.execute(sql, function(status){
-    //         callback(status);
-    //     })
-    // },
-
     deleteUser : function(user, callback){
         var sql = "delete from user where uname ='"+user+"'"
+        db.execute(sql, function(status){
+            callback(status);
+        })
+    },
+
+    sendRequest : function(userNotification,callback){
+        var sql = "insert into notification values (' ', '"+userNotification.description+"', '"+userNotification.notificationType+"', '"+userNotification.name+"', '"+userNotification.userType+"' )";
         db.execute(sql, function(status){
             callback(status);
         })

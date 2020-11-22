@@ -1021,18 +1021,6 @@ router.get('/manager/addCategory', (req, res)=>{
 	});
 })
 
-router.get('/manager/systemLeave', (req, res)=>{
-	user ={
-		userName : req.cookies['user']
-	}
-
-	userModel.getInformation(user, function(results){
-		res.render('user/manager/systemLeave', {layout : './layouts/manager-main', userInformation : results});
-	  });
-
-	//res.render('user/manager/systemLeave');
-})
-
 router.post('/manager/addCategory', (req, res)=>{
 	newCategory = {
 		'name' 	   	: req.body.name
@@ -1045,6 +1033,137 @@ router.post('/manager/addCategory', (req, res)=>{
 		}
 	})
 })
+
+router.get('/manager/seeCategories', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+	userModel.getAllcategories(function(result){
+		category = result;
+		//console.log(result);
+	})
+
+	userModel.getInformation(user, function(results){
+		res.render('user/manager/seeCategories', {layout : './layouts/manager-main', userInformation : results, categoryInformation: category });
+	  });
+
+})
+
+router.get('/manager/editCategory/:catId', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+
+	catId = req.params.catId;
+
+	userModel.getCategory(catId,function(result){
+		category = result;
+		//console.log(category);
+	})
+
+	userModel.getInformation(user, function(results){
+		res.render('user/manager/customizeCategory/editCategory', {layout : './layouts/manager-main', userInformation : results, catInformation : category});
+	  });
+
+})
+
+router.post('/manager/editCategory/:catId', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+
+	category = {
+		'id'		: req.params.catId,
+		'catName' 	: req.body.name,
+	}
+
+	//console.log(catName);
+
+	userModel.editCategory(category,function(status){
+		if(status){
+			res.redirect('/home/manager/seeCategories');
+		}else{
+			res.redirect('/home/manager/editCategory/:catId');
+		}
+	})
+
+	// userModel.getInformation(user, function(results){
+	// 	res.render('user/manager/customizeCategory/editCategory', {layout : './layouts/manager-main', userInformation : results, catInformation : category});
+	//   });
+
+})
+
+router.get('/manager/deleteCategory/:catId', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+
+	catId = req.params.catId;
+
+	userModel.getCategory(catId,function(result){
+		category = result;
+		//console.log(category);
+	})
+
+	userModel.getInformation(user, function(results){
+		res.render('user/manager/customizeCategory/deleteCategory', {layout : './layouts/manager-main', userInformation : results, catInformation : category});
+	  });
+
+})
+
+router.post('/manager/deleteCategory/:catId', (req, res)=>{
+
+	user ={
+		userName : req.cookies['user']
+	}
+
+	category = {
+		'id'		: req.params.catId,
+	}
+
+	//console.log(catName);
+
+	userModel.deleteCategory(category,function(status){
+		if(status){
+			res.redirect('/home/manager/seeCategories');
+		}else{
+			res.redirect('/home/manager/deleteCategory/:catId');
+		}
+	})
+
+})
+
+router.get('/manager/systemLeave', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+
+	userModel.getInformation(user, function(results){
+		res.render('user/manager/systemLeave', {layout : './layouts/manager-main', userInformation : results});
+	  });
+
+})
+
+router.post('/manager/systemLeave', (req, res)=>{
+	userNotification ={
+		description			: req.body.notify,
+		notificationType 	: req.body.notificationType,
+		name 				: req.cookies['user'],
+		userType			: req.body.userType
+	}
+
+	userModel.sendRequest(userNotification, function(status){
+		if(status){
+			userModel.getInformation(user, function(results){
+				res.render('user/manager/Massege', {layout : './layouts/manager-main', userInformation : results});
+			  });
+		}else{
+			res.redirect('/home/manager/systemLeave');
+		}
+	})
+})
+
+///home/manager/editCategory/
 
 ////////////////////////<-------manager-------->////////////////////
 
