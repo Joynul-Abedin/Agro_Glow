@@ -395,6 +395,7 @@ router.post('/admin/addCategory', (req, res)=>{
 	})
 })
 
+
 router.get('/admin/seeCategories', (req, res)=>{
 	user ={
 		userName : req.cookies['user']
@@ -552,48 +553,92 @@ router.get('/admin/seeProducts', (req, res)=>{
 	});
 })
 
-router.get('/admin/editProduct/:Id', (req, res)=>{
-	
-	var pId = req.params.Id;
+
+router.get('/admin/editProduct/:productId', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+
+	productId = req.params.productId;
+
+	userModel.getAllcategories(function(result){
+		categories = result;
+    })
+
+	userModel.getProduct(productId , function(results){
+		product = results;
+		console.log(results[0].id);
+	})
+
+	userModel.getInformation(user, function(results){
+		res.render('user/admin/customizeProducts/editProduct', {layout : './layouts/admin-main', userInformation : results, categoryInformation : categories, productInformation : product});
+	  });
+
+	//res.render('user/manager/editProducts');
+})
+
+router.post('/admin/editProduct/:productId', (req, res)=>{
+
+	product = {
+		'id'			: req.params.productId,
+		'productName'	: req.body.productName,
+		'category'		: req.body.category,
+		'price'			: req.body.price,
+		'quantity'		: req.body.quantity,
+		'expDate'		: req.body.expDate,
+		'description'	: req.body.description,
+		'imageURL'		: 'nothing'
+	}
+
+	//console.log(product);
+
+	userModel.editProduct(product, function(status){
+		if(status){
+			//console.log(1);
+			res.redirect('/home/admin/customizeProducts');
+		}else{
+			//console.log(0);
+			res.redirect('/home/admin/editProduct/'+product.id+'');
+		}
+	})
+
+})
+
+router.get('/admin/deleteProduct/:productId', (req, res)=>{
+
+	var id = req.params.productId;
 
 	user ={
 		userName : req.cookies['user']
 	}
-	userModel.getProduct(pId, function(results){
-		products = results;
-	})
-	userModel.getInformation(user, function(results){
-		res.render('user/admin/seeProducts', {layout : './layouts/admin-main',userInformation : results, productInformation : products});
-	});
-})
 
-router.post('/admin/editProduct/:{id}', (req, res)=>{
-	userModel.editProduct(function(results){
+	userModel.getProduct(id, function(results){
 		product = results;
 	})
-	user ={
-		userName : req.cookies['user']
-	}
-	userModel.getInformation(user, function(results){
-		res.render('user/admin/seeProducts', {layout : './layouts/admin-main',userInformation : results, productInformation : product});
-	});
+
+	userModel.getInformation(user,function(results){
+		res.render('user/admin/customizeProducts/deleteProduct', {layout : './layouts/admin-main', userInformation : results, productInformation : product});
+	  });
+	  
 })
 
+router.post('/admin/deleteProduct/:productId', (req, res)=>{
 
-router.get('/admin/deleteProduct', (req, res)=>{
-	userModel.getAllproducts(function(results){
-		product = results;
-		//console.log(manager);
+	product = {
+		'id'			: req.params.productId,
+	}
+
+	//console.log(product);
+
+	userModel.deleteProduct(product, function(status){
+		if(status){
+			res.redirect('/home/admin/customizeProducts');
+		}else{
+			res.redirect('/home/admin/deleteProduct/'+product.id+'');
+		}
 	})
-	user ={
-		userName : req.cookies['user']
-	}
-	//{layout : './layouts/main2'}
-	userModel.getInformation(user, function(results){
-		res.render('user/admin/seeProducts', {layout : './layouts/admin-main',userInformation : results, productInformation : product});
-	});
-})
 
+})
 
 
 
