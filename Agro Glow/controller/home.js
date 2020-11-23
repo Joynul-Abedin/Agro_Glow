@@ -385,6 +385,7 @@ router.post('/admin/addCategory', (req, res)=>{
 	newCategory = {
 		'name' 	   	: req.body.name
 	}
+	//console.log(req.body.name);
 	userModel.createCategory(newCategory,function(status){
 		if(status){
 			res.redirect('/home/admin/seeCategories');
@@ -1163,7 +1164,53 @@ router.post('/manager/systemLeave', (req, res)=>{
 	})
 })
 
-///home/manager/editCategory/
+router.get('/manager/checkNotifications', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+
+	userModel.getNotifications(function(results){
+		notifications = results;
+		//console.log(notifications);
+	})
+
+	userModel.getInformation(user, function(results){
+		res.render('user/manager/checkNotifications', {layout : './layouts/manager-main', userInformation : results, notifications : notifications});
+	  });
+
+})
+
+// router.get('/manager/checkNotifications/:notificationId', (req, res)=>{
+// 	user ={
+// 		userName : req.cookies['user']
+// 	}
+
+// 	// userModel.changeAproval(function(results){
+// 	// 	changed = results
+// 	// 	//console.log(notifications);
+// 	// })
+
+// 	userModel.getInformation(user, function(results){
+// 		res.redirect('/manager/checkNotifications/:notificationId', {layout : './layouts/manager-main', userInformation : results});
+// 	  });
+// })
+
+// router.get('/manager/checkNotification', (req, res)=>{
+// 	user ={
+// 		userName : req.cookies['user']
+// 	}
+
+// 	//console.log(catName);
+
+// 	userModel.getNotifications(function(results){
+// 		if(results){
+// 			res.redirect('/home/manager/seeCategories');
+// 		}else{
+// 			res.redirect('/home/manager/editCategory/:catId');
+// 		}
+// 	})
+
+// })
 
 ////////////////////////<-------manager-------->////////////////////
 

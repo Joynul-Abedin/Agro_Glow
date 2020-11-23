@@ -9,6 +9,9 @@
     
 
     <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
@@ -33,23 +36,34 @@
                         <div class="col-sm-12">
                             <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
                                 <thead>
-                                    <tr role="row">
-                                        <th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 93px;">Name</th>
-                                        <th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 93px;">Actions</th>
+                                    <tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 93px;">Description</th>
+                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 143px;">>Notification Type</th>
+                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 65px;">User Name</th>
+                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 31px;">User Type</th>
+                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 31px;">Approval</th>
+                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 69px;">Actions</th>
                                     </tr>
                                 </thead>
                                 <tfoot>
                                     <tr>
-                                        <th rowspan="1" colspan="1">Name</th>
+                                        <th rowspan="1" colspan="1">Description</th>
+                                        <th rowspan="1" colspan="1">Notification Type</th>
+                                        <th rowspan="1" colspan="1">User Name</th>
+                                        <th rowspan="1" colspan="1">User Type</th>
+                                        <th rowspan="1" colspan="1">Approval</th>
                                         <th rowspan="1" colspan="1">Actions</th>
                                     </tr>
-                
                                 </tfoot>
-                                <tbody>         
-                                    <% for(var i = 0; i < categoryInformation.length; i++){ %>
+                                <tbody>     
+                                    <% for(var i = 0; i < notifications.length; i++){ %>
                                         <tr role="row" class="odd">
-                                                <td><%= categoryInformation[i].catName %></td> 
-                                                <td><a href="" class="btn btn-primary">Edit</a><a href="" class="btn btn-danger">Delete</a></td>                                              
+                                            <td><%= notifications[i].description %></td>
+                                            <td><%= notifications[i].notificationType %></td>
+                                            <td><%= notifications[i].name %></td>
+                                            <td><%= notifications[i].userType %></td> 
+                                            <td><%= notifications[i].approval %></td>                                                
+                                            <td><a href="/home/manager/checkNotifications/<%= notifications[i].id %>" class="btn btn-warning">Aproval</a>
+                                            </td>                                                
                                         </tr>
                                     <% } %>
                                 </tbody>

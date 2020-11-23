@@ -10,7 +10,7 @@ module.exports ={
     },
 
     validate : function(user, callback){
-        var sql = 'select * from users where email = "'+user.userName+'" or username = "'+user.userName+'" and password = "'+user.password+'" and validity = "1" ';
+        var sql = 'select * from users where email = "'+user.userName+'" or username = "'+user.userName+'" and password = "'+user.password+'" and validity = "valid" ';
         db.getResults(sql, function(results){
             if(results.length > 0){
                 callback(true);
@@ -21,7 +21,7 @@ module.exports ={
     },
 
     getInformation : function(user, callback){
-        var sql = 'select * from users where email = "'+user.userName+'" or userName ="'+user.userName+'" and validity = "1"';
+        var sql = 'select * from users where email = "'+user.userName+'" or userName ="'+user.userName+'" and validity = "valid"';
         db.getResults(sql, function(results){
             callback(results);
         })
@@ -230,6 +230,13 @@ module.exports ={
         db.execute(sql, function(status){
             callback(status);
         })
-    }
+    },
+
+    getNotifications : function(callback){
+        var sql = 'select * from notification';
+        db.getResults(sql, function(results){
+            callback(results);
+        })
+    },
 
 }
