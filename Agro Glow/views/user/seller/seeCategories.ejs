@@ -7,11 +7,8 @@
 
     <!-- DataTales Example -->
     
-
+        
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
-        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
@@ -36,42 +33,30 @@
                         <div class="col-sm-12">
                             <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
                                 <thead>
-                                    <tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 93px;">Name</th>
-                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 143px;">Email</th>
-                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 65px;">DOB</th>
-                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 31px;">Mobile</th>
-                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 69px;">User Name</th>
-                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 67px;">Position</th>
-                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="2" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 67px;">Action</th>
+                                    <tr role="row">
+                                        <th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 93px;">Name</th>
+                                        <th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 93px;">Action</th>
+                                        <th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 93px;">Action</th>
                                     </tr>
                                 </thead>
                                 <tfoot>
                                     <tr>
                                         <th rowspan="1" colspan="1">Name</th>
-                                        <th rowspan="1" colspan="1">Email</th>
-                                        <th rowspan="1" colspan="1">DOB</th>
-                                        <th rowspan="1" colspan="1">Mobile</th>
-                                        <th rowspan="1" colspan="1">User Name</th>
-                                        <th rowspan="1" colspan="1">Position</th>
-                                        <th rowspan="2" colspan="1">Action</th>
+                                        <th rowspan="1" colspan="1">Actions</th>
+                                        <th rowspan="1" colspan="1">Actions</th>
                                     </tr>
                                 </tfoot>
-                                <tbody>     
-                                    <% for(var i = 0; i < farmerInformation.length; i++){ %>
+                            <form method="post">
+                                <tbody>         
+                                    <% for(var i = 0; i < categoryInformation.length; i++){ %>
                                         <tr role="row" class="odd">
-                                            <td><%= farmerInformation[i].name %></td>
-                                            <td><%= farmerInformation[i].email %></td>
-                                            <td><%= farmerInformation[i].DOB %></td>
-                                            <td><%= farmerInformation[i].mobileNo %></td>
-                                            <td><%= farmerInformation[i].userName %></td>
-                                            <td><%= farmerInformation[i].userType %></td>     
-                                            <td><a href="/home/manager/customizeFarmer/edit/<%= farmerInformation[i].userName %>" class="btn btn-primary">Edit</a>
-                                                <a href="/home/manager/customizeFarmer/validity/<%= farmerInformation[i].userName %>" class="btn btn-warning">Validity</a>
-                                                <a href="/home/manager/customizeFarmer/edit/<%= farmerInformation[i].userName %>" class="btn btn-danger">Delete</a>
-                                            </td>                                            
+                                            <td><%= categoryInformation[i].catName %></td> 
+                                            <td><a href="/home/seller/editCategory/<%= categoryInformation[i].id %>" class="btn btn-primary">Edit</a></td>
+                                            <td><a href="/home/seller/deleteCategory/<%= categoryInformation[i].id %>" class="btn btn-danger">Delete</a></td>                                          
                                         </tr>
                                     <% } %>
                                 </tbody>
+                            </form>
                             </table>
                         </div>
                     </div>

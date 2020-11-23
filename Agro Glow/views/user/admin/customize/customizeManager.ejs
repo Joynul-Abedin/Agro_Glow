@@ -57,18 +57,17 @@
                                     </tr>
                                 </tfoot>
                                 <tbody>     
-                                    <% for(var i = 0; i < farmerInformation.length; i++){ %>
+                                    <% for(var i = 0; i < sellerInformation.length; i++){ %>
                                         <tr role="row" class="odd">
-                                            <td><%= farmerInformation[i].name %></td>
-                                            <td><%= farmerInformation[i].email %></td>
-                                            <td><%= farmerInformation[i].DOB %></td>
-                                            <td><%= farmerInformation[i].mobileNo %></td>
-                                            <td><%= farmerInformation[i].userName %></td>
-                                            <td><%= farmerInformation[i].userType %></td>     
-                                            <td><a href="/home/manager/customizeFarmer/edit/<%= farmerInformation[i].userName %>" class="btn btn-primary">Edit</a>
-                                                <a href="/home/manager/customizeFarmer/validity/<%= farmerInformation[i].userName %>" class="btn btn-warning">Validity</a>
-                                                <a href="/home/manager/customizeFarmer/edit/<%= farmerInformation[i].userName %>" class="btn btn-danger">Delete</a>
-                                            </td>                                            
+                                            <td><%= sellerInformation[i].name %></td>
+                                            <td><%= sellerInformation[i].email %></td>
+                                            <td><%= sellerInformation[i].DOB %></td>
+                                            <td><%= sellerInformation[i].mobileNo %></td>
+                                            <td><%= sellerInformation[i].userName %></td>
+                                            <td><%= sellerInformation[i].userType %></td>     
+                                            <td><a href="/home/manager/customizeSeller/edit/<%= sellerInformation[i].userName %>" class="btn btn-primary">Edit</a>
+                                            <a href="" class="btn btn-warning">Block</a>
+                                            <a href="" class="btn btn-danger">Delete</a></td>                                            
                                         </tr>
                                     <% } %>
                                 </tbody>

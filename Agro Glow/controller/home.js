@@ -401,12 +401,96 @@ router.get('/admin/seeCategories', (req, res)=>{
 	}
 	userModel.getAllcategories(function(result){
 		category = result;
-		console.log(result);
-	})
+	});
 
 	userModel.getInformation(user, function(results){
 		res.render('user/admin/seeCategories', {layout : './layouts/admin-main', userInformation : results, categoryInformation: category });
+	});
+
+})
+
+
+router.get('/admin/editCategory/:catId', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+
+	catId = req.params.catId;
+
+	userModel.getCategory(catId,function(result){
+		category = result;
+		//console.log(category);
+	})
+
+	userModel.getInformation(user, function(results){
+		res.render('user/admin/customizeCategory/editCategory', {layout : './layouts/admin-main', userInformation : results, catInformation : category});
 	  });
+
+})
+
+router.post('/admin/editCategory/:catId', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+
+	category = {
+		'id'		: req.params.catId,
+		'catName' 	: req.body.name,
+	}
+
+	//console.log(catName);
+
+	userModel.editCategory(category,function(status){
+		if(status){
+			res.redirect('/home/admin/seeCategories');
+		}else{
+			res.redirect('/home/admin/editCategory/:catId');
+		}
+	})
+
+	// userModel.getInformation(user, function(results){
+	// 	res.render('user/manager/customizeCategory/editCategory', {layout : './layouts/manager-main', userInformation : results, catInformation : category});
+	//   });
+
+})
+
+router.get('/admin/deleteCategory/:catId', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+
+	catId = req.params.catId;
+
+	userModel.getCategory(catId,function(result){
+		category = result;
+		//console.log(category);
+	})
+
+	userModel.getInformation(user, function(results){
+		res.render('user/admin/customizeCategory/deleteCategory', {layout : './layouts/admin-main', userInformation : results, catInformation : category});
+	  });
+
+})
+
+router.post('/admin/deleteCategory/:catId', (req, res)=>{
+
+	user ={
+		userName : req.cookies['user']
+	}
+
+	category = {
+		'id'		: req.params.catId,
+	}
+
+	//console.log(catName);
+
+	userModel.deleteCategory(category,function(status){
+		if(status){
+			res.redirect('/home/admin/seeCategories');
+		}else{
+			res.redirect('/home/admin/deleteCategory/:catId');
+		}
+	})
 
 })
 
@@ -459,7 +543,7 @@ router.post('/admin/addProduct', (req, res)=>{
 router.get('/admin/seeProducts', (req, res)=>{
 	userModel.getAllproducts(function(results){
 		product = results;
-	})
+	});
 	user ={
 		userName : req.cookies['user']
 	}

@@ -3,7 +3,7 @@ const db = require('./db');
 module.exports ={
 
     createUser : function(newUser, callback){
-        var sql = "insert into users values (' ', '"+newUser.name+"', '"+newUser.email+"', '"+newUser.DOB+"', '"+newUser.mobileNo+"', '"+newUser.userName+"', '"+newUser.password+"', '"+newUser.userType+"', 'valid')";
+        var sql = "insert into users values (' ', '"+newUser.name+"', '"+newUser.email+"', '"+newUser.DOB+"', '"+newUser.mobileNo+"', '"+newUser.userName+"', '"+newUser.password+"', '"+newUser.userType+"', '"+newUser.validity+"')";
         db.execute(sql, function(status){
             callback(status);
         })
