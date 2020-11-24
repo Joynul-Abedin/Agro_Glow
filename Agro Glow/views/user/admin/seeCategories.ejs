@@ -7,7 +7,7 @@
 
     <!-- DataTales Example -->
     
-
+        
     <div class="card shadow mb-4">
         <div class="card-body">
             <div class="table-responsive">
@@ -45,14 +45,17 @@
                                     </tr>
                 
                                 </tfoot>
+                            <form method="post">
                                 <tbody>         
                                     <% for(var i = 0; i < categoryInformation.length; i++){ %>
                                         <tr role="row" class="odd">
-                                                <td><%= categoryInformation[i].catName %></td> 
-                                                <td><a href="" class="btn btn-primary">Edit</a><a href="" class="btn btn-danger">Delete</a></td>                                              
+                                            <td><%= categoryInformation[i].catName %></td> 
+                                            <td><a href="/home/admin/editCategory/<%= categoryInformation[i].id %>" class="btn btn-primary">Edit</a></td>
+                                            <td><a href="/home/admin/deleteCategory/<%= categoryInformation[i].id %>" class="btn btn-danger">Delete</a></td>                                          
                                         </tr>
                                     <% } %>
                                 </tbody>
+                            </form>
                             </table>
                         </div>
                     </div>

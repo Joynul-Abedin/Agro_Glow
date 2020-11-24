@@ -69,9 +69,9 @@
                                             <td><%= sellerInformation[i].mobileNo %></td>
                                             <td><%= sellerInformation[i].userName %></td>
                                             <td><%= sellerInformation[i].userType %></td>     
-                                            <td><a href="/home/manager/customizeSeller/edit/<%= sellerInformation[i].userName %>" class="btn btn-primary">Edit</a></td>
+                                            <td><a href="/home/admin/customizeSeller/edit/<%= sellerInformation[i].userName %>" class="btn btn-primary">Edit</a></td>
                                             <td><a href="" class="btn btn-warning">Block</a></td>
-                                            <td><a href="" class="btn btn-danger">Delete</a></td>                                            
+                                            <td><a href="/home/admin/customizeSeller/delete/<%= sellerInformation[i].userName %>" class="btn btn-danger">Delete</a></td>                                            
                                         </tr>
                                     <% } %>
                                 </tbody>

@@ -173,11 +173,11 @@ router.post('/admin/addManager', (req, res)=>{
 			'userName' 	: req.body.userName,
 			'password' 	: req.body.password,
 			'userType' 	: 'Manager',
-			'validity'	: '1'
+			'validity'	: 'valid'
 		}
 		userModel.createUser(newUser,function(status){
 			if(status){
-				res.redirect('/home/admin/seeManager');
+				res.redirect('/home/admin/seeManagers');
 			}else{
 				res.redirect('/home/admin/addManager');
 			}
@@ -222,11 +222,11 @@ router.post('/admin/addSeller', (req, res)=>{
 			'password' 	: req.body.password,
 			'password2' : req.body.repassword,
 			'userType' 	: 'seller',
-			'validity'	: '1'
+			'validity'	: 'valid'
 		}
 		userModel.createUser(newUser,function(status){
 			if(status){
-				res.redirect('/home/admin/seeFarmers');
+				res.redirect('/home/admin/seeSellers');
 			}else{
 				res.redirect('/home/admin/addSeller');
 			}
@@ -269,7 +269,7 @@ router.post('/admin/addFarmer', (req, res)=>{
 			'userName' 	: req.body.userName,
 			'password' 	: req.body.password,
 			'userType' 	: 'farmer',
-			'validity'	: '1'
+			'validity'	: 'valid'
 		}
 		userModel.createUser(newUser,function(status){
 			if(status){
@@ -284,6 +284,23 @@ router.post('/admin/addFarmer', (req, res)=>{
 })
 
 //----------------------------------------Customize Users -----------------------------------------------
+
+
+router.get('/admin/customizeManager', (req, res)=>{
+
+	user ={
+		userName : req.cookies['user']
+	}
+
+	userModel.getAllmanagers(function(results){
+		manager = results;
+		// console.log(sellers);
+	})
+
+	userModel.getInformation(user, function(results){
+		res.render('user/admin/customize/customizeManager', {layout : './layouts/admin-main', userInformation : results, managerInformation : manager});
+	  });
+})
 
 router.get('/admin/customizeSeller', (req, res)=>{
 
@@ -316,25 +333,25 @@ router.get('/admin/customizeFarmer', (req, res)=>{
 	  });
 })
 
-router.get('/admin/customizeSeller/edit/:userName', (req, res)=>{
 
-	var seller = req.params.userName;
+router.get('/admin/customizeManager/edit/:userName', (req, res)=>{
+
+	var manager = req.params.userName;
+
+	userModel.getManager(manager, function(results){
+		managers = results;
+	})
 
 	user ={
 		userName : req.cookies['user']
 	}
 
-	userModel.getSeller(seller, function(results){
-		sellers = results;
-	})
-
-	userModel.getInformation(user,function(results){
-		res.render('user/admin/customize/edit/editSeller', {layout : './layouts/admin-main', userInformation : results, sellerInformation : sellers});
-	});
-	  
+	userModel.getInformation(user, function(results){
+		res.render('user/admin/customize/edit/editManager', {layout : './layouts/admin-main', userInformation : results, managerInformation : managers});
+	  });
 })
 
-router.post('/admin/customizeSeller/edit/:userName', (req, res)=>{
+router.post('/admin/customizeManager/edit/:userName', (req, res)=>{
 
 	user = {
 		name   		: req.body.name,
@@ -348,6 +365,83 @@ router.post('/admin/customizeSeller/edit/:userName', (req, res)=>{
 
 	userModel.editSeller(user, function(status){
 		if(status){
+			res.redirect('/home/admin/customizeManager');
+		}else{
+			res.redirect('/admin/customizeManager/edit/"'+user.userName+'"')
+		}
+	})  
+})
+
+
+
+router.get('/admin/customizeManager/delete/:userName', (req, res)=>{
+
+	var manager = req.params.userName;
+
+	user ={
+		userName : req.cookies['user']
+	}
+
+	userModel.getManager(manager, function(results){
+		managers = results;
+	})
+
+	userModel.getInformation(user,function(results){
+		res.render('user/admin/customize/delete/deleteManager', {layout : './layouts/admin-main', userInformation : results, managerInformation : managers});
+	  });
+	  
+})
+
+router.post('/admin/customizeManager/delete/:userName', (req, res)=>{
+
+	user = {
+		userName 	: req.params.userName,
+	}
+
+	//console.log(user.userName);
+
+	userModel.deleteManager(user, function(status){
+		if(status){
+			res.redirect('/home/admin/customizeManager');
+		}else{
+			res.redirect('/home/admin/customizeManager/delete/'+user.userName+'');
+		}
+	})
+})
+
+
+router.get('/admin/customizeSeller/edit/:userName', (req, res)=>{
+
+	var seller = req.params.userName;
+
+	userModel.getSeller(seller, function(results){
+		sellers = results;
+	})
+
+	user ={
+		userName : req.cookies['user']
+	};
+
+	userModel.getInformation(user, 
+		function(results){
+		res.render('user/admin/customize/edit/editSeller', {layout : './layouts/admin-main', userInformation : results, sellerInformation : sellers});
+	  });
+})
+
+router.post('/admin/customizeSeller/edit/:userName', (req, res)=>{
+
+	user = {
+		name   		: req.body.name,
+		userName 	: req.params.userName,
+		email		: req.body.email,
+		DOB			: req.body.DOB,
+		mobileNo	: req.body.mobileNo
+	}
+
+	//console.log(req.body.name);
+
+	userModel.editSeller(user, function(status){
+		if(status){
 			res.redirect('/home/admin/customizeSeller');
 		}else{
 			res.redirect('/admin/customizeSeller/edit/"'+user.userName+'"')
@@ -355,21 +449,117 @@ router.post('/admin/customizeSeller/edit/:userName', (req, res)=>{
 	})  
 })
 
-router.get('/admin/customizeSeller/edit/:userName', (req, res)=>{
+
+
+router.get('/admin/customizeSeller/delete/:userName', (req, res)=>{
+
+	var seller = req.params.userName;
+
+	user ={
+		userName : req.cookies['user']
+	}
+
+	userModel.getSeller(seller, function(results){
+		sellers = results;
+	})
+
+	userModel.getInformation(user,function(results){
+		res.render('user/admin/customize/delete/deleteSeller', {layout : './layouts/admin-main', userInformation : results, sellerInformation : sellers});
+	  });
+	  
+})
+
+router.post('/admin/customizeSeller/delete/:userName', (req, res)=>{
+
+	user = {
+		userName 	: req.params.userName,
+	}
+
+	//console.log(user.userName);
+
+	userModel.deleteSeller(user, function(status){
+		if(status){
+			res.redirect('/home/admin/customizeSeller');
+		}else{
+			res.redirect('/home/admin/customizeSeller/delete/'+user.userName+'');
+		}
+	})
+})
+
+
+router.get('/admin/customizeFarmer/edit/:userName', (req, res)=>{
 
 	var seller = req.params.userName;
 
 	userModel.getFarmer(seller, function(results){
-		farmers = results;
+		farmer = results;
 	})
 
 	user ={
 		userName : req.cookies['user']
 	}
 
-	userModel.getInformation(function(results){
-		res.render('user/admin/customize/edit/editFarmer', {layout : './layouts/admin-main', userInformation : results, farmerInformation : farmers});
+	userModel.getInformation(user, function(results){
+		res.render('user/admin/customize/edit/editFarmer', {layout : './layouts/admin-main', userInformation : results, farmerInformation : farmer});
 	  });
+})
+
+router.post('/admin/customizeFarmer/edit/:userName', (req, res)=>{
+
+	user = {
+		name   		: req.body.name,
+		userName 	: req.params.userName,
+		email		: req.body.email,
+		DOB			: req.body.DOB,
+		mobileNo	: req.body.mobileNo
+	}
+
+	console.log(req.body.name);
+
+	userModel.editSeller(user, function(status){
+		if(status){
+			res.redirect('/home/admin/customizeFarmer');
+		}else{
+			res.redirect('/admin/customizeFarmer/edit/"'+user.userName+'"')
+		}
+	})  
+})
+
+
+
+router.get('/admin/customizeFarmer/delete/:userName', (req, res)=>{
+
+	var farmer = req.params.userName;
+
+	user ={
+		userName : req.cookies['user']
+	}
+
+	userModel.getFarmer(farmer, function(results){
+		farmers = results;
+	})
+
+	userModel.getInformation(user,function(results){
+		res.render('user/admin/customize/delete/deleteFarmer', {layout : './layouts/admin-main', userInformation : results, farmerInformation : farmers});
+	  });
+	  
+})
+
+router.post('/admin/customizeFarmer/delete/:userName', (req, res)=>{
+
+	user = {
+		userName 	: req.params.userName,
+	}
+
+	console.log(user.userName);
+
+	userModel.deleteFarmer(user, function(status){
+		if(status){
+			res.redirect('/home/admin/customizeFarmer');
+		}else{
+			res.redirect('/home/admin/customizeFarmer/delete/'+user.userName+'');
+		}
+	})
 })
 
 //-------------------------------------Category-----------------------------------------------
@@ -664,7 +854,7 @@ router.get('/manager/seeSellers', (req, res)=>{
 	userModel.getAllsellers(function(results){
 		sellers = results;
 		console.log(sellers);
-	})
+	});
 	user ={
 		userName : req.cookies['user']
 	}
@@ -720,11 +910,12 @@ router.post('/manager/addSeller', (req, res)=>{
 			'mobileNo'	: req.body.mobileNo,
 			'userName' 	: req.body.userName,
 			'password' 	: req.body.password,
-			'userType' 	: 'seller'
+			'userType' 	: 'seller',
+			'validity'	: 'valid'
 		}
 		userModel.createUser(newUser,function(status){
 			if(status){
-				res.redirect('/home/manager/seeFarmers');
+				res.redirect('/home/manager/seeSellers');
 			}else{
 				res.redirect('/home/manager/addSeller');
 			}
@@ -985,17 +1176,26 @@ router.post('/manager/addProduct', (req, res)=>{
 			'expDate'		: req.body.expDate,
 			'quantity' 		: req.body.quantity,
 			'price' 		: req.body.price,
-			'image' 		: 'nothing',
+			'image' 		: req.files.productImage.name
 		}
-		console.log(newProduct);
-		userModel.createProduct(newProduct,function(status){
-			// console.log(status);
-			if(status){
-				res.redirect('/home/manager/customizeProducts');
-			}else{
-				res.redirect('/home/manager/addProduct');
-			}
-		})
+
+		var file = req.files.productImage;
+
+	file.mv('./assets/img/'+file.name, function(error){
+		
+		if(error == null){
+			userModel.createProduct(newProduct,function(status){
+				if(status){
+					res.redirect('/home/manager/customizeProducts');
+				}else{
+					res.redirect('/home/manager/addProduct');
+				}
+			})
+		}else{
+			res.redirect('/home/manager/addProduct');
+		}
+	});
+
 	}else{
 			res.redirect('/home/manager/addProduct');
 	}
@@ -1039,29 +1239,40 @@ router.get('/manager/editProduct/:productId', (req, res)=>{
 
 router.post('/manager/editProduct/:productId', (req, res)=>{
 
-	product = {
-		'id'			: req.params.productId,
-		'productName'	: req.body.productName,
-		'category'		: req.body.category,
-		'price'			: req.body.price,
-		'quantity'		: req.body.quantity,
-		'expDate'		: req.body.expDate,
-		'description'	: req.body.description,
-		'imageURL'		: 'nothing'
-	}
-
-	//console.log(product);
-
-	userModel.editProduct(product, function(status){
-		if(status){
-			//console.log(1);
-			res.redirect('/home/manager/customizeProducts');
-		}else{
-			//console.log(0);
-			res.redirect('/home/manager/editProduct/'+product.id+'');
+	if(req.body.category != 'Select Category'){
+		product = {
+			'id'			:req.params.productId,
+			'productName'	: req.body.productName,
+			'description'   : req.body.description,
+			'category'		: req.body.category,
+			'expDate'		: req.body.expDate,
+			'quantity' 		: req.body.quantity,
+			'price' 		: req.body.price,
+			'imageURL' 		: req.files.productImage.name
 		}
-	})
 
+		console.log(req.files.productImage);
+
+		var file = req.files.productImage;
+
+	file.mv('./assets/img/'+file.name, function(error){
+		
+		if(error == null){
+			userModel.editProduct(product,function(status){
+				if(status){
+					res.redirect('/home/manager/customizeProducts');
+				}else{
+					res.redirect('/home/manager/editProduct/:productId');
+				}
+			})
+		}else{
+			res.redirect('/home/manager/addProduct/:productId');
+		}
+	});
+
+	}else{
+			res.redirect('/home/manager/addProduct');
+	}
 })
 
 router.get('/manager/deleteProduct/:productId', (req, res)=>{
@@ -1098,6 +1309,29 @@ router.post('/manager/deleteProduct/:productId', (req, res)=>{
 		}
 	})
 
+})
+
+router.get('/manager/viewProduct/:productId', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+
+	productId = req.params.productId;
+
+	userModel.getAllcategories(function(result){
+		categories = result;
+    })
+
+	userModel.getProduct(productId , function(results){
+		product = results;
+		console.log(results[0].id);
+	})
+
+	userModel.getInformation(user, function(results){
+		res.render('user/manager/customizeProducts/viewProduct', {layout : './layouts/manager-main', userInformation : results, categoryInformation : categories, productInformation : product});
+	  });
+
+	//res.render('user/manager/editProducts');
 })
 
 router.get('/manager/addCategory', (req, res)=>{
