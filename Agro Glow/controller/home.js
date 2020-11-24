@@ -1666,6 +1666,7 @@ router.post('/seller/customizeFarmer/edit/:userName', (req, res)=>{
 })
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 router.get('/seller/addCategory', (req, res)=>{
 	user ={
 		userName : req.cookies['user']
@@ -1676,10 +1677,107 @@ router.get('/seller/addCategory', (req, res)=>{
 	});
 })
 =======
+=======
+>>>>>>> Stashed changes
 router.get('/manager/leaveHistory', (req, res)=>{
 	user ={
 		userName : req.cookies['user']
 	}
+<<<<<<< Updated upstream
+=======
+
+	userModel.leaveHistory(user,function(results){
+		leaveHistory = results;
+	})
+
+	userModel.getInformation(user, function(results){
+		res.render('user/manager/leaveHistory', {layout : './layouts/manager-main', userInformation : results, leaveHistory: leaveHistory});
+	  });
+
+})
+
+router.post('/manager/validitySeller', (req, res)=>{
+
+	const id = req.body.userId;
+	console.log(id);
+
+	userModel.getUserbyid(id, function(results){
+
+		console.log(results);
+
+		if(results[0].validity == 'valid'){
+			userModel.sellerInvalid(id, function(status){
+				if (status) {
+					res.json({
+						validity:"Invalid"
+					})
+				}else{
+					res.json({
+						validity:"failed"
+					})
+				}
+			 });
+		}else{
+			userModel.sellerValid(id, function(status){
+				if (status) {
+					res.json({
+						validity:"Valid"
+					})
+				}else{
+					res.json({
+						validity:"failed"
+					})
+				}
+			 });
+		}
+
+	  });
+
+})
+
+// router.post('/manager/validitySeller', (req, res)=>{
+
+// 	const id = req.body.userId;
+// 	console.log(id);
+
+// 	userModels.getUser()
+// 	result[0].validity =='valid'
+	
+// 	userModel.sellerValidity(id, function(status){
+// 		if (status) {
+// 			res.json({
+// 				validity:"valided"
+// 			})
+// 		}else{
+// 			res.json({
+// 				validity:"failed"
+// 			})
+// 		}
+
+
+// 		else 
+// 		userModel.sellerValidity(id, function(status){
+// 			if (status) {
+// 				res.json({
+// 					validity:"valided"
+// 				})
+// 			}else{
+// 				res.json({
+// 					validity:"failed"
+// 				})
+// 			}
+	
+// 	  });
+
+// })
+
+
+
+// router.get('/manager/checkNotifications/:notificationId', (req, res)=>{
+// 	user ={
+// 		userName : req.cookies['user']
+// 	}
+>>>>>>> Stashed changes
 
 	userModel.leaveHistory(user,function(results){
 		leaveHistory = results;
