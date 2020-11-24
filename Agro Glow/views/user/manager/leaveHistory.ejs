@@ -37,11 +37,10 @@
                             <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
                                 <thead>
                                     <tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 93px;">Description</th>
-                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 143px;">>Notification Type</th>
+                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 143px;">Notification Type</th>
                                         <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 65px;">User Name</th>
                                         <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 31px;">User Type</th>
-                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 31px;">Approval</th>
-                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 69px;">Actions</th>
+                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 40px;">Approval</th>
                                     </tr>
                                 </thead>
                                 <tfoot>
@@ -50,21 +49,19 @@
                                         <th rowspan="1" colspan="1">Notification Type</th>
                                         <th rowspan="1" colspan="1">User Name</th>
                                         <th rowspan="1" colspan="1">User Type</th>
-                                        <th rowspan="1" colspan="1">Approval</th>
-                                        <th rowspan="1" colspan="1">Actions</th>
+                                        <th rowspan="1" colspan="1">Appoval</th>
                                     </tr>
                                 </tfoot>
-                                <tbody>     
-                                    <% for(var i = 0; i < notifications.length; i++){ %>
-                                        <tr role="row" class="odd">
-                                            <td><%= notifications[i].description %></td>
-                                            <td><%= notifications[i].notificationType %></td>
-                                            <td><%= notifications[i].name %></td>
-                                            <td><%= notifications[i].userType %></td> 
-                                            <td><%= notifications[i].approval %></td>                                                
-                                            <td><a href="#" class="btn btn-primary">Accept</a> 
-                                            <a href="#" class="btn btn-warning">Reject</a></td>                                                
-                                        </tr>
+
+                                <tbody>
+                                    <% for(var i = 0; i < leaveHistory.length; i++){ %>
+                                    <tr role="row" class="odd">
+                                        <td><%= leaveHistory[i].description %></td>
+                                        <td><%= leaveHistory[i].notificationType %></td>
+                                        <td><%= leaveHistory[i].name %></td>
+                                        <td><%= leaveHistory[i].userType %></td>
+                                        <td><%= leaveHistory[i].approval %></td>                                            
+                                    </tr>
                                     <% } %>
                                 </tbody>
                             </table>

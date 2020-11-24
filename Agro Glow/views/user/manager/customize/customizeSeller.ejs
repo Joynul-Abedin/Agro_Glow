@@ -61,7 +61,7 @@
                                 <form method="post">
                                     <tbody>     
                                         <% for(var i = 0; i < sellerInformation.length; i++){ %>
-                                            <tr role="row" class="odd">
+                                            <tr role="row" class="odd" id="validity<%= sellerInformation[i].id %>">
                                                 <td><%= sellerInformation[i].name %></td>
                                                 <td><%= sellerInformation[i].email %></td>
                                                 <td><%= sellerInformation[i].DOB %></td>
@@ -70,8 +70,12 @@
                                                 <td><%= sellerInformation[i].userType %></td>
                                                 <td><%= sellerInformation[i].validity %></td>     
                                                 <td><a href="/home/manager/customizeSeller/edit/<%= sellerInformation[i].userName %>" class="btn btn-primary">Edit</a>
-                                                <a href="#" class="btn btn-warning"><%= sellerInformation[i].validity %></a> 
-                                                <a href="/home/manager/customizeSeller/delete/<%= sellerInformation[i].userName %>" class="btn btn-danger">Delete</a></td>                                       
+                                                    <a href="/home/manager/customizeSeller/delete/<%= sellerInformation[i].userName %>" class="btn btn-danger">Delete</a> 
+                                                    <% if( sellerInformation[i].validity == 'valid'){ %> 
+                                                    <button id="seller<%= sellerInformation[i].id %>"  type="button" class="btn btn-warning" data-value=<%= sellerInformation[i].id %> >Valid</button>
+                                                    <%}else{%>
+                                                        <button id="seller<%= sellerInformation[i].id %>"  type="button" class="btn btn-warning" data-value=<%= sellerInformation[i].id %> >Invalid</button></td>
+                                                        <%} %></td>                                     
                                             </tr>
                                         <% } %>
                                     </tbody>
@@ -116,3 +120,62 @@
         </div>
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+
+<script>
+    $(document).ready(function() {
+
+
+        $('button').click(function (e) {
+                                var id =$(this).data("value") 
+                                var elementId = `#seller${id}`;
+                                       
+                                        $.ajax({  
+                                                url:'/home/manager/validitySeller',  
+                                                method:'post',  
+                                                data:{'userId':id},
+                                                contentType: "application/x-www-form-urlencoded",  
+                                                success:function(response){ 
+                                                    
+                                                    $(elementId).html(`${response.validity}`)
+                                                    
+                                                },  
+                                                error:function(response){  
+                                                    alert('server error occured')  
+                                                }  
+                                            });
+                                        
+                                    });
+
+    
+        //    $('button').click(function (e) {
+        //        var Id =$(this).data("value") 
+        //        var elementId = `#verifySeller${Id}`;
+                      
+        //                $.ajax({  
+        //                        url:'/manager/validitySeller',  
+        //                        method:'post',  
+        //                        data:{'userId':Id},
+        //                        contentType: "application/x-www-form-urlencoded",  
+        //                        success:function(response){ 
+                                   
+        //                         $(elementId).remove()
+        //                             setTimeout(()=> { 
+        //                                $('#verify').addClass('alert alert-success')
+        //                                $('.alert').append(`${response.sv}`);
+        //                                setTimeout(() => {
+        //                                    $('#verify').removeClass('alert alert-success');
+        //                                    $('#verify').empty();
+        //                                }, 1500);
+        //                             }, 200);
+        //                        },  
+        //                        error:function(response){  
+        //                            alert(response.sv)  
+        //                        }  
+        //                    });
+                       
+        //            });
+                
+                });
+   
+</script>

@@ -22,12 +22,43 @@ module.exports ={
         })
     },
 
+    sellerInvalid : function(sellerId, callback){
+        var sql = "update users set validity = 'invalid' where id = '"+sellerId+"' ";
+        console.log(sql);
+        db.execute(sql, function(status){
+            callback(status);
+        })
+    },
+
+    sellerValid : function(sellerId, callback){
+        var sql = "update users set validity = 'valid' where id = '"+sellerId+"' ";
+        console.log(sql);
+        db.execute(sql, function(status){
+            callback(status);
+        })
+    },
+
+    leaveHistory : function(user, callback){
+        var sql = 'select * from notification where name ="'+user.userName+'" ';
+        db.getResults(sql, function(results){
+            callback(results);
+        })
+    },
+
     getInformation : function(user, callback){
         var sql = 'select * from users where email = "'+user.userName+'" or userName ="'+user.userName+'" and validity = "valid"';
         db.getResults(sql, function(results){
             callback(results);
         })
     },
+
+    getUserbyid : function(id, callback){
+        var sql = 'select * from users where id= "'+id+'"';
+        db.getResults(sql, function(results){
+            callback(results);
+        })
+    },
+
 
     getAllmanagers : function(callback){
         var sql = 'select * from users where userType = "manager"';
@@ -228,9 +259,11 @@ module.exports ={
     },
 
     sendRequest : function(userNotification,callback){
-        var sql = "insert into notification values (' ', '"+userNotification.description+"', '"+userNotification.notificationType+"', '"+userNotification.name+"', '"+userNotification.userType+"' )";
+        var sql = "insert into notification values (' ', '"+userNotification.description+"', '"+userNotification.notificationType+"', '"+userNotification.name+"', '"+userNotification.userType+"', '"+userNotification.approval+"' )";
+        console.log(sql);
         db.execute(sql, function(status){
             callback(status);
+            console.log(status);
         })
     },
 

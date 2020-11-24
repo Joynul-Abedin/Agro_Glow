@@ -1,4 +1,5 @@
 const express = require('express');
+const userModels = require('../models/userModels');
 const userModel = require.main.require('./models/userModels');
 const router = express.Router();
 
@@ -1472,7 +1473,8 @@ router.post('/manager/systemLeave', (req, res)=>{
 		description			: req.body.notify,
 		notificationType 	: req.body.notificationType,
 		name 				: req.cookies['user'],
-		userType			: req.body.userType
+		userType			: req.body.userType,
+		approval			: 'pending'
 	}
 
 	userModel.sendRequest(userNotification, function(status){
@@ -1663,6 +1665,7 @@ router.post('/seller/customizeFarmer/edit/:userName', (req, res)=>{
 	})
 })
 
+<<<<<<< Updated upstream
 router.get('/seller/addCategory', (req, res)=>{
 	user ={
 		userName : req.cookies['user']
@@ -1672,6 +1675,104 @@ router.get('/seller/addCategory', (req, res)=>{
 		res.render('user/seller/addCategory', {layout : './layouts/seller-main', userInformation : results});
 	});
 })
+=======
+router.get('/manager/leaveHistory', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+
+	userModel.leaveHistory(user,function(results){
+		leaveHistory = results;
+	})
+
+	userModel.getInformation(user, function(results){
+		res.render('user/manager/leaveHistory', {layout : './layouts/manager-main', userInformation : results, leaveHistory: leaveHistory});
+	  });
+
+})
+
+router.post('/manager/validitySeller', (req, res)=>{
+
+	const id = req.body.userId;
+	console.log(id);
+
+	userModel.getUserbyid(id, function(results){
+
+		console.log(results);
+
+		if(results[0].validity == 'valid'){
+			userModel.sellerInvalid(id, function(status){
+				if (status) {
+					res.json({
+						validity:"Invalid"
+					})
+				}else{
+					res.json({
+						validity:"failed"
+					})
+				}
+			 });
+		}else{
+			userModel.sellerValid(id, function(status){
+				if (status) {
+					res.json({
+						validity:"Valid"
+					})
+				}else{
+					res.json({
+						validity:"failed"
+					})
+				}
+			 });
+		}
+
+	  });
+
+})
+
+// router.post('/manager/validitySeller', (req, res)=>{
+
+// 	const id = req.body.userId;
+// 	console.log(id);
+
+// 	userModels.getUser()
+// 	result[0].validity =='valid'
+	
+// 	userModel.sellerValidity(id, function(status){
+// 		if (status) {
+// 			res.json({
+// 				validity:"valided"
+// 			})
+// 		}else{
+// 			res.json({
+// 				validity:"failed"
+// 			})
+// 		}
+
+
+// 		else 
+// 		userModel.sellerValidity(id, function(status){
+// 			if (status) {
+// 				res.json({
+// 					validity:"valided"
+// 				})
+// 			}else{
+// 				res.json({
+// 					validity:"failed"
+// 				})
+// 			}
+	
+// 	  });
+
+// })
+
+
+
+// router.get('/manager/checkNotifications/:notificationId', (req, res)=>{
+// 	user ={
+// 		userName : req.cookies['user']
+// 	}
+>>>>>>> Stashed changes
 
 router.post('/seller/addCategory', (req, res)=>{
 	newCategory = {
