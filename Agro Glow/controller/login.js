@@ -9,14 +9,14 @@ router.get('/', (req,res)=>{
 
 router.post('/', (req, res)=>{
 
-	console.log(req.body.email);
+	//console.log(req.body.email);
 
 	user = {
 		'userName'	: req.body.user,
 		'password' 	: req.body.password
 	}
 
-	//console.log(req.body.user);
+	console.log(user);
 
 	userModel.validate(user, function(status){
 		if(status){

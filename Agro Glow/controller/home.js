@@ -20,6 +20,11 @@ router.get('/', (req, res)=>{
 			res.redirect('/home/manager');
 		}
 	});
+	userModel.getInformation(user,function(results){
+		if(results[0].userType == 'seller'){
+			res.redirect('/home/seller');
+		}
+	});
 })
 
 
@@ -385,7 +390,6 @@ router.post('/admin/addCategory', (req, res)=>{
 	newCategory = {
 		'name' 	   	: req.body.name
 	}
-	//console.log(req.body.name);
 	userModel.createCategory(newCategory,function(status){
 		if(status){
 			res.redirect('/home/admin/seeCategories');
@@ -394,7 +398,6 @@ router.post('/admin/addCategory', (req, res)=>{
 		}
 	})
 })
-
 
 router.get('/admin/seeCategories', (req, res)=>{
 	user ={
@@ -553,92 +556,48 @@ router.get('/admin/seeProducts', (req, res)=>{
 	});
 })
 
+router.get('/admin/editProduct/:Id', (req, res)=>{
+	
+	var pId = req.params.Id;
 
-router.get('/admin/editProduct/:productId', (req, res)=>{
 	user ={
 		userName : req.cookies['user']
 	}
-
-	productId = req.params.productId;
-
-	userModel.getAllcategories(function(result){
-		categories = result;
-    })
-
-	userModel.getProduct(productId , function(results){
-		product = results;
-		console.log(results[0].id);
+	userModel.getProduct(pId, function(results){
+		products = results;
 	})
-
 	userModel.getInformation(user, function(results){
-		res.render('user/admin/customizeProducts/editProduct', {layout : './layouts/admin-main', userInformation : results, categoryInformation : categories, productInformation : product});
-	  });
-
-	//res.render('user/manager/editProducts');
+		res.render('user/admin/seeProducts', {layout : './layouts/admin-main',userInformation : results, productInformation : products});
+	});
 })
 
-router.post('/admin/editProduct/:productId', (req, res)=>{
-
-	product = {
-		'id'			: req.params.productId,
-		'productName'	: req.body.productName,
-		'category'		: req.body.category,
-		'price'			: req.body.price,
-		'quantity'		: req.body.quantity,
-		'expDate'		: req.body.expDate,
-		'description'	: req.body.description,
-		'imageURL'		: 'nothing'
-	}
-
-	//console.log(product);
-
-	userModel.editProduct(product, function(status){
-		if(status){
-			//console.log(1);
-			res.redirect('/home/admin/customizeProducts');
-		}else{
-			//console.log(0);
-			res.redirect('/home/admin/editProduct/'+product.id+'');
-		}
+router.post('/admin/editProduct/:{id}', (req, res)=>{
+	userModel.editProduct(function(results){
+		product = results;
 	})
-
-})
-
-router.get('/admin/deleteProduct/:productId', (req, res)=>{
-
-	var id = req.params.productId;
-
 	user ={
 		userName : req.cookies['user']
 	}
+	userModel.getInformation(user, function(results){
+		res.render('user/admin/seeProducts', {layout : './layouts/admin-main',userInformation : results, productInformation : product});
+	});
+})
 
-	userModel.getProduct(id, function(results){
+
+router.get('/admin/deleteProduct', (req, res)=>{
+	userModel.getAllproducts(function(results){
 		product = results;
+		//console.log(manager);
 	})
-
-	userModel.getInformation(user,function(results){
-		res.render('user/admin/customizeProducts/deleteProduct', {layout : './layouts/admin-main', userInformation : results, productInformation : product});
-	  });
-	  
-})
-
-router.post('/admin/deleteProduct/:productId', (req, res)=>{
-
-	product = {
-		'id'			: req.params.productId,
+	user ={
+		userName : req.cookies['user']
 	}
-
-	//console.log(product);
-
-	userModel.deleteProduct(product, function(status){
-		if(status){
-			res.redirect('/home/admin/customizeProducts');
-		}else{
-			res.redirect('/home/admin/deleteProduct/'+product.id+'');
-		}
-	})
-
+	//{layout : './layouts/main2'}
+	userModel.getInformation(user, function(results){
+		res.render('user/admin/seeProducts', {layout : './layouts/admin-main',userInformation : results, productInformation : product});
+	});
 })
+
 
 
 
@@ -1293,54 +1252,523 @@ router.post('/manager/systemLeave', (req, res)=>{
 	})
 })
 
-router.get('/manager/checkNotifications', (req, res)=>{
+///home/manager/editCategory/
+
+////////////////////////<-------manager-------->////////////////////
+
+//////////////// seller////////////////////////
+
+router.get('/seller', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+	userModel.getInformation(user, function(results){
+		res.render('user/seller/home', {layout : './layouts/seller-main', userInformation : results});
+	  });
+})
+
+router.get('/seller/profile', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+	userModel.getInformation(user,function(results){
+		res.render('user/seller/profile', {layout : './layouts/seller-main', userInformation : results});
+		console.log(results);    
+	  });	
+});
+
+router.post('/seller/profile', (req, res)=>{
+	
+	if(req.body.password == req.body.repassword){
+		password = req.body.password
+		//console.log(req.body.firstName+' '+req.body.lastName);
+	}else{
+		password = null;
+	}
+
+	if(password != null){
+		user = {
+			'userName'  : req.body.userName,
+			'name'  	: req.body.name,
+			'email' 	: req.body.email,
+			'DOB'   	: req.body.DOB,
+			'mobileNo' 	: req.body.mobileNo,
+			'password'	: password	
+		}
+		userModel.editUser(user,function(status){
+			if(status){
+				res.redirect('/home/seller/profile');
+				console.log('1');
+			}else{
+				res.redirect('/home/seller/profile');
+				console.log('2');
+			}
+		})
+	}else{
+			res.redirect('/home/seller/profile');
+			console.log('3');
+		}
+	
+	// userModel.getInformation(function(results){
+	// 	res.render('user/manager/profile', {userInformation : results});
+	//   });	
+});
+
+router.get('/seller/seeFarmers', (req, res)=>{
+
+	userModel.getAllfarmers(function(results){
+		farmers = results;
+		//console.log(farmers);
+	})
 	user ={
 		userName : req.cookies['user']
 	}
 
-	userModel.getNotifications(function(results){
-		notifications = results;
-		//console.log(notifications);
-	})
+	userModel.getInformation(user,function(results){
+		res.render('user/seller/seeUsers/seeFarmers', {layout : './layouts/seller-main',userInformation : results, farmerInformation : farmers});
+	  });
+	//res.render('user/manager/seeUsers/seeFarmers');
+})
 
-	userModel.getInformation(user, function(results){
-		res.render('user/manager/checkNotifications', {layout : './layouts/manager-main', userInformation : results, notifications : notifications});
+router.get('/seller/addFarmer', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+
+	userModel.getInformation(user,function(results){
+		res.render('user/seller/addUser/addFarmer', {layout : './layouts/seller-main', userInformation : results});
 	  });
 
 })
 
-// router.get('/manager/checkNotifications/:notificationId', (req, res)=>{
-// 	user ={
-// 		userName : req.cookies['user']
-// 	}
+router.post('/seller/addFarmer', (req, res)=>{
 
-// 	// userModel.changeAproval(function(results){
-// 	// 	changed = results
-// 	// 	//console.log(notifications);
-// 	// })
+	if(req.body.password == req.body.repassword){
+		password = req.body.password
+		//console.log(req.body.firstName+' '+req.body.lastName);
+	}else{
+		password = null;
+	}
 
-// 	userModel.getInformation(user, function(results){
-// 		res.redirect('/manager/checkNotifications/:notificationId', {layout : './layouts/manager-main', userInformation : results});
-// 	  });
-// })
+	if(password != null){
+		newUser = {
+			'name' 	   	: req.body.firstName+' '+req.body.lastName,
+			'email'    	: req.body.email,
+			'DOB'		: req.body.DOB,
+			'mobileNo'	: req.body.mobileNo,
+			'userName' 	: req.body.userName,
+			'password' 	: req.body.password,
+			'userType' 	: 'farmer',
+			'validity'  : 'valid'
+		}
+		userModel.createUser(newUser,function(status){
+			if(status){
+				res.redirect('/home/seller/seeFarmers');
+			}else{
+				res.redirect('/home/seller/addFarmer');
+			}
+		})
+	}else{
+			res.redirect('/home/seller/addFarmer');
+		}
 
-// router.get('/manager/checkNotification', (req, res)=>{
-// 	user ={
-// 		userName : req.cookies['user']
-// 	}
+	//res.render('user/manager/addUser/addFarmer',  {userInformation : results});
+})
 
-// 	//console.log(catName);
+router.get('/seller/customizeFarmer', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
 
-// 	userModel.getNotifications(function(results){
-// 		if(results){
-// 			res.redirect('/home/manager/seeCategories');
-// 		}else{
-// 			res.redirect('/home/manager/editCategory/:catId');
-// 		}
-// 	})
+	userModel.getAllfarmers(function(results){
+		farmers = results;
+		// console.log(farmers);
+	})
 
-// })
+	userModel.getInformation(user, function(results){
+		res.render('user/seller/customize/customizeFarmer', {layout : './layouts/seller-main', userInformation : results, farmerInformation : farmers});
+	  });
+})
 
-////////////////////////<-------manager-------->////////////////////
+router.get('/seller/customizeFarmer/edit/:userName', (req, res)=>{
+
+	var farmer = req.params.userName;
+
+	user ={
+		userName : req.cookies['user']
+	}
+
+	userModel.getFarmer(farmer, function(results){
+		farmer = results;
+	})
+
+	userModel.getInformation(user,function(results){
+		res.render('user/seller/customize/edit/editFarmer', {layout : './layouts/seller-main', userInformation : results, farmerInformation : farmer});
+	  });
+	  
+})
+
+router.post('/seller/customizeFarmer/edit/:userName', (req, res)=>{
+
+	user = {
+		name   		: req.body.name,
+		userName 	: req.params.userName,
+		email		: req.body.email,
+		DOB			: req.body.DOB,
+		mobileNo	: req.body.mobileNo
+	}
+
+	console.log(req.body.name);
+
+	userModel.editFarmer(user, function(status){
+		if(status){
+			res.redirect('/home/seller/customizeFarmer');
+		}else{
+			res.redirect('/seller/customizeFarmer/edit/"'+user.userName+'"');
+		}
+	})
+})
+
+router.get('/seller/addCategory', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+	
+	userModel.getInformation(user,function(results){
+		res.render('user/seller/addCategory', {layout : './layouts/seller-main', userInformation : results});
+	});
+})
+
+router.post('/seller/addCategory', (req, res)=>{
+	newCategory = {
+		'name' 	   	: req.body.name
+	}
+	userModel.createCategory(newCategory,function(status){
+		if(status){
+			res.redirect('/home/seller/seeCategories');
+		}else{
+			res.redirect('/home/seller/addCategory');
+		}
+	})
+})
+
+router.get('/seller/seeCategories', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+	userModel.getAllcategories(function(result){
+		category = result;
+		//console.log(result);
+	})
+
+	userModel.getInformation(user, function(results){
+		res.render('user/seller/seeCategories', {layout : './layouts/seller-main', userInformation : results, categoryInformation: category });
+	  });
+
+})
+
+router.get('/seller/editCategory/:catId', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+
+	catId = req.params.catId;
+
+	userModel.getCategory(catId,function(result){
+		category = result;
+		//console.log(category);
+	})
+
+	userModel.getInformation(user, function(results){
+		res.render('user/seller/customizeCategory/editCategory', {layout : './layouts/seller-main', userInformation : results, catInformation : category});
+	  });
+
+})
+
+router.post('/seller/editCategory/:catId', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+
+	category = {
+		'id'		: req.params.catId,
+		'catName' 	: req.body.name,
+	}
+
+	//console.log(catName);
+
+	userModel.editCategory(category,function(status){
+		if(status){
+			res.redirect('/home/seller/seeCategories');
+		}else{
+			res.redirect('/home/seller/editCategory/:catId');
+		}
+	})
+
+	// userModel.getInformation(user, function(results){
+	// 	res.render('user/manager/customizeCategory/editCategory', {layout : './layouts/manager-main', userInformation : results, catInformation : category});
+	//   });
+
+})
+
+router.get('/seller/deleteCategory/:catId', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+
+	catId = req.params.catId;
+
+	userModel.getCategory(catId,function(result){
+		category = result;
+		//console.log(category);
+	})
+
+	userModel.getInformation(user, function(results){
+		res.render('user/seller/customizeCategory/deleteCategory', {layout : './layouts/seller-main', userInformation : results, catInformation : category});
+	  });
+
+})
+
+router.post('/seller/deleteCategory/:catId', (req, res)=>{
+
+	user ={
+		userName : req.cookies['user']
+	}
+
+	category = {
+		'id'		: req.params.catId,
+	}
+
+	//console.log(catName);
+
+	userModel.deleteCategory(category,function(status){
+		if(status){
+			res.redirect('/home/seller/seeCategories');
+		}else{
+			res.redirect('/home/seller/deleteCategory/:catId');
+		}
+	})
+
+})
+
+router.get('/seller/addProduct', (req, res)=>{
+	console.log('categories');
+	user ={
+		userName : req.cookies['user']
+	}
+
+	userModel.getAllcategories(function(result){
+		categories = result;
+		console.log('categories');
+})
+
+	userModel.getInformation(user, function(results){
+		res.render('user/seller/addProduct', {layout : './layouts/seller-main', userInformation : results, categoryInformation : categories});
+	  });
+})
+
+router.post('/seller/addProduct', (req, res)=>{
+
+	if(req.body.category != 'Select Category'){
+		newProduct = {
+			'productName'	: req.body.productName,
+			'description'   : req.body.description,
+			'category'		: req.body.category,
+			'expDate'		: req.body.expDate,
+			'quantity' 		: req.body.quantity,
+			'price' 		: req.body.price,
+			'image' 		: 'nothing',
+		}
+		console.log(newProduct);
+		userModel.createProduct(newProduct,function(status){
+			// console.log(status);
+			if(status){
+				res.redirect('/home/seller/customizeProducts');
+			}else{
+				res.redirect('/home/seller/addProduct');
+			}
+		})
+	}else{
+			res.redirect('/home/seller/addProduct');
+	}
+})
+
+router.get('/seller/seeProducts', (req, res)=>{
+	userModel.getAllproducts(function(results){
+		product = results;
+	});
+	user ={
+		userName : req.cookies['user']
+	}
+	userModel.getInformation(user, function(results){
+		res.render('user/seller/seeProducts', {layout : './layouts/seller-main',userInformation : results, productInformation : product});
+	});
+})
+
+
+router.get('/seller/customizeProducts', (req, res)=>{
+	userModel.getAllproducts(function(results){
+		products = results;
+	})
+	user ={
+		userName : req.cookies['user']
+	}
+	
+	userModel.getInformation(user, function(results){
+		res.render('user/seller/customizeProducts/customizeProducts', {layout : './layouts/seller-main',userInformation : results, productInformation : products});
+	});
+})
+
+router.get('/seller/editProduct/:productId', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+
+	productId = req.params.productId;
+
+	userModel.getAllcategories(function(result){
+		categories = result;
+    })
+
+	userModel.getProduct(productId , function(results){
+		product = results;
+		console.log(results[0].id);
+	})
+
+	userModel.getInformation(user, function(results){
+		res.render('user/seller/customizeProducts/editProduct', {layout : './layouts/seller-main', userInformation : results, categoryInformation : categories, productInformation : product});
+	  });
+
+	//res.render('user/manager/editProducts');
+})
+
+router.post('/seller/editProduct/:productId', (req, res)=>{
+
+	product = {
+		'id'			: req.params.productId,
+		'productName'	: req.body.productName,
+		'category'		: req.body.category,
+		'price'			: req.body.price,
+		'quantity'		: req.body.quantity,
+		'expDate'		: req.body.expDate,
+		'description'	: req.body.description,
+		'imageURL'		: 'nothing'
+	}
+
+	//console.log(product);
+
+	userModel.editProduct(product, function(status){
+		if(status){
+			//console.log(1);
+			res.redirect('/home/seller/customizeProducts');
+		}else{
+			//console.log(0);
+			res.redirect('/home/seller/editProduct/'+product.id+'');
+		}
+	})
+
+})
+
+router.get('/seller/deleteProduct/:productId', (req, res)=>{
+
+	var id = req.params.productId;
+
+	user ={
+		userName : req.cookies['user']
+	}
+
+	userModel.getProduct(id, function(results){
+		product = results;
+	})
+
+	userModel.getInformation(user,function(results){
+		res.render('user/seller/customizeProducts/deleteProduct', {layout : './layouts/seller-main', userInformation : results, productInformation : product});
+	  });
+	  
+})
+
+router.post('/seller/deleteProduct/:productId', (req, res)=>{
+
+	product = {
+		'id'			: req.params.productId,
+	}
+
+	//console.log(product);
+
+	userModel.deleteProduct(product, function(status){
+		if(status){
+			res.redirect('/home/seller/customizeProducts');
+		}else{
+			res.redirect('/home/seller/deleteProduct/'+product.id+'');
+		}
+	})
+
+})
+
+router.get('/seller/systemLeave', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+
+	userModel.getInformation(user, function(results){
+		res.render('user/seller/systemLeave', {layout : './layouts/seller-main', userInformation : results});
+	  });
+
+})
+
+router.post('/seller/systemLeave', (req, res)=>{
+	userNotification ={
+		description			: req.body.notify,
+		notificationType 	: req.body.notificationType,
+		name 				: req.cookies['user'],
+		userType			: req.body.userType
+	}
+
+	userModel.sendRequest(userNotification, function(status){
+		if(status){
+			userModel.getInformation(user, function(results){
+				res.render('user/seller/Massege', {layout : './layouts/sell-main', userInformation : results});
+			  });
+		}else{
+			res.redirect('/home/seller/systemLeave');
+		}
+	})
+})
+router.get('/seller/customizeFarmer/delete/:userName', (req, res)=>{
+
+	var farmer = req.params.userName;
+
+	user ={
+		userName : req.cookies['user']
+	}
+
+	userModel.getFarmer(farmer, function(results){
+		farmer = results;
+	})
+
+	userModel.getInformation(user,function(results){
+		res.render('user/seller/customize/delete/deleteFarmer', {layout : './layouts/seller-main', userInformation : results, farmerInformation : farmer});
+	  });
+	  
+})
+
+router.post('/seller/customizeFarmer/delete/:userName', (req, res)=>{
+
+	user = {
+		userName 	: req.params.userName,
+	}
+
+	//console.log(user.userName);
+
+	userModel.deleteFarmer(user, function(status){
+		if(status){
+			res.redirect('/home/seller/customizeFarmer');
+		}else{
+			res.redirect('/home/seller/customizeFarmer/delete/'+user.userName+'');
+		}
+	})
+})
+
+
 
 module.exports = router;

@@ -4,12 +4,14 @@ module.exports ={
 
     createUser : function(newUser, callback){
         var sql = "insert into users values (' ', '"+newUser.name+"', '"+newUser.email+"', '"+newUser.DOB+"', '"+newUser.mobileNo+"', '"+newUser.userName+"', '"+newUser.password+"', '"+newUser.userType+"', '"+newUser.validity+"')";
+        console.log(sql);
         db.execute(sql, function(status){
             callback(status);
         })
     },
 
     validate : function(user, callback){
+        console.log(user);
         var sql = 'select * from users where email = "'+user.userName+'" or username = "'+user.userName+'" and password = "'+user.password+'" and validity = "valid" ';
         db.getResults(sql, function(results){
             if(results.length > 0){
