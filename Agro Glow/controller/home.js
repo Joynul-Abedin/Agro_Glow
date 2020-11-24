@@ -1592,12 +1592,8 @@ router.post('/seller/addFarmer', (req, res)=>{
 			'mobileNo'	: req.body.mobileNo,
 			'userName' 	: req.body.userName,
 			'password' 	: req.body.password,
-<<<<<<< Updated upstream
 			'userType' 	: 'farmer',
 			'validity'  : 'valid'
-=======
-			'userType' 	: 'farmer'
->>>>>>> Stashed changes
 		}
 		userModel.createUser(newUser,function(status){
 			if(status){
@@ -1965,18 +1961,13 @@ router.post('/seller/systemLeave', (req, res)=>{
 	userModel.sendRequest(userNotification, function(status){
 		if(status){
 			userModel.getInformation(user, function(results){
-<<<<<<< Updated upstream
 				res.render('user/seller/Massege', {layout : './layouts/sell-main', userInformation : results});
-=======
-				res.render('user/seller/Massege', {layout : './layouts/seller-main', userInformation : results});
->>>>>>> Stashed changes
 			  });
 		}else{
 			res.redirect('/home/seller/systemLeave');
 		}
 	})
 })
-<<<<<<< Updated upstream
 router.get('/seller/customizeFarmer/delete/:userName', (req, res)=>{
 
 	var farmer = req.params.userName;
@@ -2011,8 +2002,6 @@ router.post('/seller/customizeFarmer/delete/:userName', (req, res)=>{
 		}
 	})
 })
-=======
->>>>>>> Stashed changes
 
 
 
