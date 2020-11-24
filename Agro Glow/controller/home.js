@@ -674,7 +674,7 @@ router.post('/admin/deleteCategory/:catId', (req, res)=>{
 	}
 
 	category = {
-		'id'		: req.params.catId,
+		'id'		: req.params.catId
 	}
 
 	//console.log(catName);
@@ -683,7 +683,7 @@ router.post('/admin/deleteCategory/:catId', (req, res)=>{
 		if(status){
 			res.redirect('/home/admin/seeCategories');
 		}else{
-			res.redirect('/home/admin/deleteCategory/:catId');
+			res.redirect('/home/admin/seeCategories');
 		}
 	})
 
@@ -1665,8 +1665,6 @@ router.post('/seller/customizeFarmer/edit/:userName', (req, res)=>{
 	})
 })
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 router.get('/seller/addCategory', (req, res)=>{
 	user ={
 		userName : req.cookies['user']
@@ -1676,15 +1674,11 @@ router.get('/seller/addCategory', (req, res)=>{
 		res.render('user/seller/addCategory', {layout : './layouts/seller-main', userInformation : results});
 	});
 })
-=======
-=======
->>>>>>> Stashed changes
+
 router.get('/manager/leaveHistory', (req, res)=>{
 	user ={
 		userName : req.cookies['user']
 	}
-<<<<<<< Updated upstream
-=======
 
 	userModel.leaveHistory(user,function(results){
 		leaveHistory = results;
@@ -1777,104 +1771,11 @@ router.post('/manager/validitySeller', (req, res)=>{
 // 	user ={
 // 		userName : req.cookies['user']
 // 	}
->>>>>>> Stashed changes
 
-	userModel.leaveHistory(user,function(results){
-		leaveHistory = results;
-	})
-
-	userModel.getInformation(user, function(results){
-		res.render('user/manager/leaveHistory', {layout : './layouts/manager-main', userInformation : results, leaveHistory: leaveHistory});
-	  });
-
-})
-
-router.post('/manager/validitySeller', (req, res)=>{
-
-	const id = req.body.userId;
-	console.log(id);
-
-	userModel.getUserbyid(id, function(results){
-
-		console.log(results);
-
-		if(results[0].validity == 'valid'){
-			userModel.sellerInvalid(id, function(status){
-				if (status) {
-					res.json({
-						validity:"Invalid"
-					})
-				}else{
-					res.json({
-						validity:"failed"
-					})
-				}
-			 });
-		}else{
-			userModel.sellerValid(id, function(status){
-				if (status) {
-					res.json({
-						validity:"Valid"
-					})
-				}else{
-					res.json({
-						validity:"failed"
-					})
-				}
-			 });
-		}
-
-	  });
-
-})
-
-// router.post('/manager/validitySeller', (req, res)=>{
-
-// 	const id = req.body.userId;
-// 	console.log(id);
-
-// 	userModels.getUser()
-// 	result[0].validity =='valid'
-	
-// 	userModel.sellerValidity(id, function(status){
-// 		if (status) {
-// 			res.json({
-// 				validity:"valided"
-// 			})
-// 		}else{
-// 			res.json({
-// 				validity:"failed"
-// 			})
-// 		}
-
-
-// 		else 
-// 		userModel.sellerValidity(id, function(status){
-// 			if (status) {
-// 				res.json({
-// 					validity:"valided"
-// 				})
-// 			}else{
-// 				res.json({
-// 					validity:"failed"
-// 				})
-// 			}
-	
-// 	  });
-
-// })
-
-
-
-// router.get('/manager/checkNotifications/:notificationId', (req, res)=>{
-// 	user ={
-// 		userName : req.cookies['user']
-// 	}
->>>>>>> Stashed changes
 
 router.post('/seller/addCategory', (req, res)=>{
 	newCategory = {
-		'name' 	   	: req.body.name
+		'name' 	   	: req.body.name 
 	}
 	userModel.createCategory(newCategory,function(status){
 		if(status){
@@ -1884,6 +1785,7 @@ router.post('/seller/addCategory', (req, res)=>{
 		}
 	})
 })
+
 
 router.get('/seller/seeCategories', (req, res)=>{
 	user ={

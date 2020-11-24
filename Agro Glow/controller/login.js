@@ -1,6 +1,7 @@
 const express = require('express');
 const userModel = require.main.require('./models/userModels');
 const router = express.Router();
+const { body, validationResult } = require('express-validator');
 
 
 router.get('/', (req,res)=>{
@@ -33,15 +34,14 @@ router.get('/register', (req,res)=>{
 	res.render('login/register');
 });
 
-router.post('/register', (req, res)=>{
+router.post('/register',(req, res)=>{
 
 	if(req.body.password == req.body.repassword){
 		password = req.body.password
-		console.log(req.body.firstName+' '+req.body.lastName);
+		//console.log(req.body.firstName+' '+req.body.lastName);
 	}else{
-		password = null;
+		password = repassword = null;
 	}
-
 	if(password != null){
 		newUser = {
 			'name' 	   	: req.body.firstName+' '+req.body.lastName,
@@ -64,7 +64,7 @@ router.post('/register', (req, res)=>{
 			res.redirect('/login/register');
 		}
 
-	console.log(req.body.firstName+' '+req.body.lastName);
+	//console.log(req.body.firstName+' '+req.body.lastName);
 
 });
 
