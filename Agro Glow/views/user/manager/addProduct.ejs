@@ -1,6 +1,8 @@
 
 
 <script src="/assets/jquery/jquery-3.5.1.js"></script>
+<link href="/assets/css/productImage.css" rel="stylesheet">
+<link href="/assets/js/productImage.js" rel="stylesheet">
 
 <div class="container tm-mt-big tm-mb-big">
   <div class="row">
@@ -13,7 +15,7 @@
         </div>
         <div class="row tm-edit-product-row">
           <div class="col-xl-6 col-lg-6 col-md-12">
-            <form method="post" class="tm-edit-product-form">
+            <form method="post" class="tm-edit-product-form" enctype="multipart/form-data">
               <div class="form-group mb-3">
                 <label
                   for="name"
@@ -95,21 +97,9 @@
               </div>
           </div>
           <div class="col-xl-6 col-lg-6 col-md-12 mx-auto mb-4">
-            <div class="tm-product-img-dummy mx-auto">
-              <i
-                class="fas fa-cloud-upload-alt tm-upload-icon"
-                onclick="document.getElementById('fileInput').click();"
-              ></i>
-            </div>
-            <div class="custom-file mt-3 mb-3">
-              <input id="fileInput" type="file" style="display:none;" />
-              <input
-                type="button"
-                class="btn btn-primary btn-block mx-auto"
-                value="UPLOAD PRODUCT IMAGE"
-                onclick="document.getElementById('fileInput').click();"
-              />
-            </div>
+            <img id="myImg" src="#" alt="your image" class="thumb">
+          </br>
+          <input type='file' name="productImage"/>
           </div>
           <div class="col-12">
             <button type="submit" class="btn btn-primary btn-block text-uppercase">Add Product Now</button>
@@ -122,10 +112,33 @@
 </div>
 
 
-<script>
-  $(function() {
-    $("#expire_date").datepicker();
+<style>
+  /* Image Designing Propoerties */
+  .thumb {
+      height: 200px;
+      border: 1px solid #000;
+      margin: 10px 5px 0 0;
+  }
+</style>
+
+<script type="text/javascript">
+  /* The uploader form */
+  $(function () {
+      $(":file").change(function () {
+          if (this.files && this.files[0]) {
+              var reader = new FileReader();
+
+              reader.onload = imageIsLoaded;
+              reader.readAsDataURL(this.files[0]);
+          }
+      });
   });
+
+  function imageIsLoaded(e) {
+      $('#myImg').attr('src', e.target.result);
+      $('#yourImage').attr('src', e.target.result);
+  };
+
 </script>
 </body>
 </html>

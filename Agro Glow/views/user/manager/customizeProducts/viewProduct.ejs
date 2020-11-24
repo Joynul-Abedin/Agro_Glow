@@ -1,0 +1,54 @@
+<div>
+
+    <div class="container">
+
+        <div class="card o-hidden border-0 shadow-lg my-5">
+            <div class="card-body p-0">
+                <!-- Nested Row within Card Body -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="p-5">
+                            <div class="text-center">
+                                <br><br>
+                                <div class="form-group">
+                                    <div class="col-sm-12 mb-3 mb-sm-0 text-center">
+                                        <img id="myImg" src="/assets/img/<%= productInformation[0].imageURL %>" alt="your image" class="thumb">
+                                    </div>
+                                </div>
+                                <h1 class="h4 text-gray-900 mb-4"><%= productInformation[0].productName %></strong> </h1>
+                            </div>
+                            <form class="user" method="post">
+                                <div class="form-group">
+                                    <div class="col-sm-12 mb-3 mb-sm-0 text-center">
+                                        <h4 style="color: blue;">Description: &nbsp<%= productInformation[0].description %></h4>
+                                        <h4 style="color: blue;">Catagory: <%= productInformation[0].category %></h4>
+                                        <h4 style="color: blue;">Expire Date: <%= productInformation[0].expDate %></h4>
+                                        <h4 style="color: blue;">Quantity: <%= productInformation[0].quantity %></h4>
+                                        <h4 style="color: blue;">Price: <%= productInformation[0].price %></h4>
+                                    </div>
+                                      <input type="hidden" name="notificationType" value="leaveManager">
+                                      <input type="hidden" name="userName" value="<%= userInformation[0].userName %>">
+                                      <input type="hidden" name="userType" value="<%= userInformation[0].userType %>">
+                                </div><hr>
+                                <a href="/home/manager/customizeProducts" class="btn btn-primary  btn-block text-uppercase">
+                                    Back
+                                </a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <style>
+        /* Image Designing Propoerties */
+        .thumb {
+            height: 200px;
+            border: 1px solid #000;
+            margin: 10px 5px 0 0;
+        }
+      </style>
+
+    <!-- Bootstrap core JavaScript-->

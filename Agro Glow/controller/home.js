@@ -895,7 +895,7 @@ router.get('/manager/seeSellers', (req, res)=>{
 	userModel.getAllsellers(function(results){
 		sellers = results;
 		console.log(sellers);
-	})
+	});
 	user ={
 		userName : req.cookies['user']
 	}
@@ -951,11 +951,12 @@ router.post('/manager/addSeller', (req, res)=>{
 			'mobileNo'	: req.body.mobileNo,
 			'userName' 	: req.body.userName,
 			'password' 	: req.body.password,
-			'userType' 	: 'seller'
+			'userType' 	: 'seller',
+			'validity'	: 'valid'
 		}
 		userModel.createUser(newUser,function(status){
 			if(status){
-				res.redirect('/home/manager/seeFarmers');
+				res.redirect('/home/manager/seeSellers');
 			}else{
 				res.redirect('/home/manager/addSeller');
 			}
@@ -1216,17 +1217,26 @@ router.post('/manager/addProduct', (req, res)=>{
 			'expDate'		: req.body.expDate,
 			'quantity' 		: req.body.quantity,
 			'price' 		: req.body.price,
-			'image' 		: 'nothing',
+			'image' 		: req.files.productImage.name
 		}
-		console.log(newProduct);
-		userModel.createProduct(newProduct,function(status){
-			// console.log(status);
-			if(status){
-				res.redirect('/home/manager/customizeProducts');
-			}else{
-				res.redirect('/home/manager/addProduct');
-			}
-		})
+
+		var file = req.files.productImage;
+
+	file.mv('./assets/img/'+file.name, function(error){
+		
+		if(error == null){
+			userModel.createProduct(newProduct,function(status){
+				if(status){
+					res.redirect('/home/manager/customizeProducts');
+				}else{
+					res.redirect('/home/manager/addProduct');
+				}
+			})
+		}else{
+			res.redirect('/home/manager/addProduct');
+		}
+	});
+
 	}else{
 			res.redirect('/home/manager/addProduct');
 	}
@@ -1270,29 +1280,40 @@ router.get('/manager/editProduct/:productId', (req, res)=>{
 
 router.post('/manager/editProduct/:productId', (req, res)=>{
 
-	product = {
-		'id'			: req.params.productId,
-		'productName'	: req.body.productName,
-		'category'		: req.body.category,
-		'price'			: req.body.price,
-		'quantity'		: req.body.quantity,
-		'expDate'		: req.body.expDate,
-		'description'	: req.body.description,
-		'imageURL'		: 'nothing'
-	}
-
-	//console.log(product);
-
-	userModel.editProduct(product, function(status){
-		if(status){
-			//console.log(1);
-			res.redirect('/home/manager/customizeProducts');
-		}else{
-			//console.log(0);
-			res.redirect('/home/manager/editProduct/'+product.id+'');
+	if(req.body.category != 'Select Category'){
+		product = {
+			'id'			:req.params.productId,
+			'productName'	: req.body.productName,
+			'description'   : req.body.description,
+			'category'		: req.body.category,
+			'expDate'		: req.body.expDate,
+			'quantity' 		: req.body.quantity,
+			'price' 		: req.body.price,
+			'imageURL' 		: req.files.productImage.name
 		}
-	})
 
+		console.log(req.files.productImage);
+
+		var file = req.files.productImage;
+
+	file.mv('./assets/img/'+file.name, function(error){
+		
+		if(error == null){
+			userModel.editProduct(product,function(status){
+				if(status){
+					res.redirect('/home/manager/customizeProducts');
+				}else{
+					res.redirect('/home/manager/editProduct/:productId');
+				}
+			})
+		}else{
+			res.redirect('/home/manager/addProduct/:productId');
+		}
+	});
+
+	}else{
+			res.redirect('/home/manager/addProduct');
+	}
 })
 
 router.get('/manager/deleteProduct/:productId', (req, res)=>{
@@ -1329,6 +1350,29 @@ router.post('/manager/deleteProduct/:productId', (req, res)=>{
 		}
 	})
 
+})
+
+router.get('/manager/viewProduct/:productId', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+
+	productId = req.params.productId;
+
+	userModel.getAllcategories(function(result){
+		categories = result;
+    })
+
+	userModel.getProduct(productId , function(results){
+		product = results;
+		console.log(results[0].id);
+	})
+
+	userModel.getInformation(user, function(results){
+		res.render('user/manager/customizeProducts/viewProduct', {layout : './layouts/manager-main', userInformation : results, categoryInformation : categories, productInformation : product});
+	  });
+
+	//res.render('user/manager/editProducts');
 })
 
 router.get('/manager/addCategory', (req, res)=>{

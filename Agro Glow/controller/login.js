@@ -50,7 +50,8 @@ router.post('/register', (req, res)=>{
 			'mobileNo'	: null,
 			'userName' 	: req.body.userName,
 			'password' 	: password,
-			'userType' 	: 'farmer'
+			'userType' 	: 'farmer',
+			'validity'	: 'valid'
 		}
 		userModel.createUser(newUser,function(status){
 			if(status){

@@ -4,6 +4,7 @@ const expressLayouts = require('express-ejs-layouts')
 const bodyPars 		 = require('body-parser');
 const cookieParser 	 = require('cookie-parser');
 const exSession 	 = require('express-session');
+const exUpload 		 = require('express-fileupload');
 const login 		 = require('./controller/login');
 const home 			 = require('./controller/home');
 const logout 		 = require('./controller/logout');
@@ -14,6 +15,7 @@ app.set('view engine', 'ejs');
 
 app.set('layout', './layouts/main');
 
+app.use(exUpload());
 app.use(expressLayouts);
 app.use('/assets', express.static('assets'));
 app.use(bodyPars.urlencoded({extended : false}));
