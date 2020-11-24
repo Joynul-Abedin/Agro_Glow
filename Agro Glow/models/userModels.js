@@ -175,21 +175,21 @@ module.exports ={
     },
 
     deleteManager : function(user, callback){
-        var sql = "delete from users where userName = '"+user.userName+"' ";
+        var sql = "delete from users where userName = '"+user.userName+"' and userType = 'manager' ";
         db.execute(sql, function(status){
             callback(status);
         })
     },
 
     deleteSeller : function(user, callback){
-        var sql = "delete from users where userName = '"+user.userName+"' ";
+        var sql = "delete from users where userName = '"+user.userName+"' and userType = 'seller'";
         db.execute(sql, function(status){
             callback(status);
         })
     },
 
     deleteFarmer : function(user, callback){
-        var sql = "delete from users where userName = '"+user.userName+"' ";
+        var sql = "delete from users where userName = '"+user.userName+"' and userType = 'farmer'";
         db.execute(sql, function(status){
             callback(status);
         })

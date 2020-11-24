@@ -168,11 +168,11 @@ router.post('/admin/addManager', (req, res)=>{
 			'userName' 	: req.body.userName,
 			'password' 	: req.body.password,
 			'userType' 	: 'Manager',
-			'validity'	: '1'
+			'validity'	: 'valid'
 		}
 		userModel.createUser(newUser,function(status){
 			if(status){
-				res.redirect('/home/admin/seeManager');
+				res.redirect('/home/admin/seeManagers');
 			}else{
 				res.redirect('/home/admin/addManager');
 			}
@@ -217,11 +217,11 @@ router.post('/admin/addSeller', (req, res)=>{
 			'password' 	: req.body.password,
 			'password2' : req.body.repassword,
 			'userType' 	: 'seller',
-			'validity'	: '1'
+			'validity'	: 'valid'
 		}
 		userModel.createUser(newUser,function(status){
 			if(status){
-				res.redirect('/home/admin/seeFarmers');
+				res.redirect('/home/admin/seeSellers');
 			}else{
 				res.redirect('/home/admin/addSeller');
 			}
@@ -264,7 +264,7 @@ router.post('/admin/addFarmer', (req, res)=>{
 			'userName' 	: req.body.userName,
 			'password' 	: req.body.password,
 			'userType' 	: 'farmer',
-			'validity'	: '1'
+			'validity'	: 'valid'
 		}
 		userModel.createUser(newUser,function(status){
 			if(status){
@@ -279,6 +279,23 @@ router.post('/admin/addFarmer', (req, res)=>{
 })
 
 //----------------------------------------Customize Users -----------------------------------------------
+
+
+router.get('/admin/customizeManager', (req, res)=>{
+
+	user ={
+		userName : req.cookies['user']
+	}
+
+	userModel.getAllmanagers(function(results){
+		manager = results;
+		// console.log(sellers);
+	})
+
+	userModel.getInformation(user, function(results){
+		res.render('user/admin/customize/customizeManager', {layout : './layouts/admin-main', userInformation : results, managerInformation : manager});
+	  });
+})
 
 router.get('/admin/customizeSeller', (req, res)=>{
 
@@ -311,25 +328,25 @@ router.get('/admin/customizeFarmer', (req, res)=>{
 	  });
 })
 
-router.get('/admin/customizeSeller/edit/:userName', (req, res)=>{
 
-	var seller = req.params.userName;
+router.get('/admin/customizeManager/edit/:userName', (req, res)=>{
+
+	var manager = req.params.userName;
+
+	userModel.getManager(manager, function(results){
+		managers = results;
+	})
 
 	user ={
 		userName : req.cookies['user']
 	}
 
-	userModel.getSeller(seller, function(results){
-		sellers = results;
-	})
-
-	userModel.getInformation(user,function(results){
-		res.render('user/admin/customize/edit/editSeller', {layout : './layouts/admin-main', userInformation : results, sellerInformation : sellers});
-	});
-	  
+	userModel.getInformation(user, function(results){
+		res.render('user/admin/customize/edit/editManager', {layout : './layouts/admin-main', userInformation : results, managerInformation : managers});
+	  });
 })
 
-router.post('/admin/customizeSeller/edit/:userName', (req, res)=>{
+router.post('/admin/customizeManager/edit/:userName', (req, res)=>{
 
 	user = {
 		name   		: req.body.name,
@@ -343,6 +360,83 @@ router.post('/admin/customizeSeller/edit/:userName', (req, res)=>{
 
 	userModel.editSeller(user, function(status){
 		if(status){
+			res.redirect('/home/admin/customizeManager');
+		}else{
+			res.redirect('/admin/customizeManager/edit/"'+user.userName+'"')
+		}
+	})  
+})
+
+
+
+router.get('/admin/customizeManager/delete/:userName', (req, res)=>{
+
+	var manager = req.params.userName;
+
+	user ={
+		userName : req.cookies['user']
+	}
+
+	userModel.getManager(manager, function(results){
+		managers = results;
+	})
+
+	userModel.getInformation(user,function(results){
+		res.render('user/admin/customize/delete/deleteManager', {layout : './layouts/admin-main', userInformation : results, managerInformation : managers});
+	  });
+	  
+})
+
+router.post('/admin/customizeManager/delete/:userName', (req, res)=>{
+
+	user = {
+		userName 	: req.params.userName,
+	}
+
+	//console.log(user.userName);
+
+	userModel.deleteManager(user, function(status){
+		if(status){
+			res.redirect('/home/admin/customizeManager');
+		}else{
+			res.redirect('/home/admin/customizeManager/delete/'+user.userName+'');
+		}
+	})
+})
+
+
+router.get('/admin/customizeSeller/edit/:userName', (req, res)=>{
+
+	var seller = req.params.userName;
+
+	userModel.getSeller(seller, function(results){
+		sellers = results;
+	})
+
+	user ={
+		userName : req.cookies['user']
+	};
+
+	userModel.getInformation(user, 
+		function(results){
+		res.render('user/admin/customize/edit/editSeller', {layout : './layouts/admin-main', userInformation : results, sellerInformation : sellers});
+	  });
+})
+
+router.post('/admin/customizeSeller/edit/:userName', (req, res)=>{
+
+	user = {
+		name   		: req.body.name,
+		userName 	: req.params.userName,
+		email		: req.body.email,
+		DOB			: req.body.DOB,
+		mobileNo	: req.body.mobileNo
+	}
+
+	//console.log(req.body.name);
+
+	userModel.editSeller(user, function(status){
+		if(status){
 			res.redirect('/home/admin/customizeSeller');
 		}else{
 			res.redirect('/admin/customizeSeller/edit/"'+user.userName+'"')
@@ -350,21 +444,117 @@ router.post('/admin/customizeSeller/edit/:userName', (req, res)=>{
 	})  
 })
 
-router.get('/admin/customizeSeller/edit/:userName', (req, res)=>{
+
+
+router.get('/admin/customizeSeller/delete/:userName', (req, res)=>{
+
+	var seller = req.params.userName;
+
+	user ={
+		userName : req.cookies['user']
+	}
+
+	userModel.getSeller(seller, function(results){
+		sellers = results;
+	})
+
+	userModel.getInformation(user,function(results){
+		res.render('user/admin/customize/delete/deleteSeller', {layout : './layouts/admin-main', userInformation : results, sellerInformation : sellers});
+	  });
+	  
+})
+
+router.post('/admin/customizeSeller/delete/:userName', (req, res)=>{
+
+	user = {
+		userName 	: req.params.userName,
+	}
+
+	//console.log(user.userName);
+
+	userModel.deleteSeller(user, function(status){
+		if(status){
+			res.redirect('/home/admin/customizeSeller');
+		}else{
+			res.redirect('/home/admin/customizeSeller/delete/'+user.userName+'');
+		}
+	})
+})
+
+
+router.get('/admin/customizeFarmer/edit/:userName', (req, res)=>{
 
 	var seller = req.params.userName;
 
 	userModel.getFarmer(seller, function(results){
-		farmers = results;
+		farmer = results;
 	})
 
 	user ={
 		userName : req.cookies['user']
 	}
 
-	userModel.getInformation(function(results){
-		res.render('user/admin/customize/edit/editFarmer', {layout : './layouts/admin-main', userInformation : results, farmerInformation : farmers});
+	userModel.getInformation(user, function(results){
+		res.render('user/admin/customize/edit/editFarmer', {layout : './layouts/admin-main', userInformation : results, farmerInformation : farmer});
 	  });
+})
+
+router.post('/admin/customizeFarmer/edit/:userName', (req, res)=>{
+
+	user = {
+		name   		: req.body.name,
+		userName 	: req.params.userName,
+		email		: req.body.email,
+		DOB			: req.body.DOB,
+		mobileNo	: req.body.mobileNo
+	}
+
+	console.log(req.body.name);
+
+	userModel.editSeller(user, function(status){
+		if(status){
+			res.redirect('/home/admin/customizeFarmer');
+		}else{
+			res.redirect('/admin/customizeFarmer/edit/"'+user.userName+'"')
+		}
+	})  
+})
+
+
+
+router.get('/admin/customizeFarmer/delete/:userName', (req, res)=>{
+
+	var farmer = req.params.userName;
+
+	user ={
+		userName : req.cookies['user']
+	}
+
+	userModel.getFarmer(farmer, function(results){
+		farmers = results;
+	})
+
+	userModel.getInformation(user,function(results){
+		res.render('user/admin/customize/delete/deleteFarmer', {layout : './layouts/admin-main', userInformation : results, farmerInformation : farmers});
+	  });
+	  
+})
+
+router.post('/admin/customizeFarmer/delete/:userName', (req, res)=>{
+
+	user = {
+		userName 	: req.params.userName,
+	}
+
+	console.log(user.userName);
+
+	userModel.deleteFarmer(user, function(status){
+		if(status){
+			res.redirect('/home/admin/customizeFarmer');
+		}else{
+			res.redirect('/home/admin/customizeFarmer/delete/'+user.userName+'');
+		}
+	})
 })
 
 //-------------------------------------Category-----------------------------------------------
