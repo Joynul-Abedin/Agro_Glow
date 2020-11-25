@@ -110,10 +110,33 @@
     </div>
     
 
-    <script>
-      $(function() {
-        $("#expire_date").datepicker();
+    <style>
+      /* Image Designing Propoerties */
+      .thumb {
+          height: 200px;
+          border: 1px solid #000;
+          margin: 10px 5px 0 0;
+      }
+    </style>
+    
+    <script type="text/javascript">
+      /* The uploader form */
+      $(function () {
+          $(":file").change(function () {
+              if (this.files && this.files[0]) {
+                  var reader = new FileReader();
+    
+                  reader.onload = imageIsLoaded;
+                  reader.readAsDataURL(this.files[0]);
+              }
+          });
       });
+    
+      function imageIsLoaded(e) {
+          $('#myImg').attr('src', e.target.result);
+          $('#yourImage').attr('src', e.target.result);
+      };
+    
     </script>
   </body>
 </html>

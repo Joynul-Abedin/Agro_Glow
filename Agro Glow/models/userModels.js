@@ -1,7 +1,10 @@
 const db = require('./db');
+const bcrypt = require('bcrypt');
+
 
 module.exports ={
 
+    
     createUser : function(newUser, callback){
         var sql = "insert into users values (' ', '"+newUser.name+"', '"+newUser.email+"', '"+newUser.DOB+"', '"+newUser.mobileNo+"', '"+newUser.userName+"', '"+newUser.password+"', '"+newUser.userType+"', '"+newUser.validity+"')";
         console.log(sql);
@@ -11,7 +14,7 @@ module.exports ={
     },
 
     validate : function(user, callback){
-        console.log(user);
+
         var sql = 'select * from users where email = "'+user.userName+'" or username = "'+user.userName+'" and password = "'+user.password+'" and validity = "valid" ';
         db.getResults(sql, function(results){
             if(results.length > 0){
@@ -189,7 +192,7 @@ module.exports ={
     },
 
     editUser : function(user, callback){
-        var sql = "update users set name = '"+user.name+"', email = '"+user.email+"', DOB = '"+user.DOB+"', mobileNo = '"+user.mobileNo+"', password = '"+user.password+"' where userName = '"+user.userName+"'"
+        var sql = "update users set name = '"+user.name+"', email = '"+user.email+"', DOB = '"+user.DOB+"', mobileNo = '"+user.mobileNo+"', password = '' where userName = '"+user.userName+"'"
         db.execute(sql, function(status){
             callback(status);
         })

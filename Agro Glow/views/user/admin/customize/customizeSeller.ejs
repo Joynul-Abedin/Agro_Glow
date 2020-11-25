@@ -1,10 +1,7 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Tables</h1>
-    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-        For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official DataTables documentation</a>.</p>
-
+    <h1 class="h3 mb-2 text-gray-800" style="text-align: center;">Tables</h1>
     <!-- DataTales Example -->
     
 
@@ -42,9 +39,8 @@
                                         <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 31px;">Mobile</th>
                                         <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 69px;">User Name</th>
                                         <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 67px;">Position</th>
-                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 67px;">Action</th>
-                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 67px;">Action</th>
-                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 67px;">Action</th>
+                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 67px;">Validity</th>
+                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="2" aria-label="Salary: activate to sort column ascending" style="width: 67px;">Action</th>
                                     </tr>
                                 </thead>
                                 <tfoot>
@@ -55,26 +51,32 @@
                                         <th rowspan="1" colspan="1">Mobile</th>
                                         <th rowspan="1" colspan="1">User Name</th>
                                         <th rowspan="1" colspan="1">Position</th>
-                                        <th rowspan="1" colspan="1">Action</th>
-                                        <th rowspan="1" colspan="1">Action</th>
-                                        <th rowspan="1" colspan="1">Action</th>
+                                        <th rowspan="1" colspan="1">Validity</th>
+                                        <th rowspan="1" colspan="2">Action</th>
                                     </tr>
                                 </tfoot>
-                                <tbody>     
-                                    <% for(var i = 0; i < sellerInformation.length; i++){ %>
-                                        <tr role="row" class="odd">
-                                            <td><%= sellerInformation[i].name %></td>
-                                            <td><%= sellerInformation[i].email %></td>
-                                            <td><%= sellerInformation[i].DOB %></td>
-                                            <td><%= sellerInformation[i].mobileNo %></td>
-                                            <td><%= sellerInformation[i].userName %></td>
-                                            <td><%= sellerInformation[i].userType %></td>     
-                                            <td><a href="/home/admin/customizeSeller/edit/<%= sellerInformation[i].userName %>" class="btn btn-primary">Edit</a></td>
-                                            <td><a href="" class="btn btn-warning">Block</a></td>
-                                            <td><a href="/home/admin/customizeSeller/delete/<%= sellerInformation[i].userName %>" class="btn btn-danger">Delete</a></td>                                            
-                                        </tr>
-                                    <% } %>
-                                </tbody>
+                                <form method="post">
+                                    <tbody>     
+                                        <% for(var i = 0; i < sellerInformation.length; i++){ %>
+                                            <tr role="row" class="odd" id="validity<%= sellerInformation[i].id %>">
+                                                <td><%= sellerInformation[i].name %></td>
+                                                <td><%= sellerInformation[i].email %></td>
+                                                <td><%= sellerInformation[i].DOB %></td>
+                                                <td><%= sellerInformation[i].mobileNo %></td>
+                                                <td><%= sellerInformation[i].userName %></td>
+                                                <td><%= sellerInformation[i].userType %></td>
+                                                <td><%= sellerInformation[i].validity %></td>     
+                                                <td><a href="/home/admin/customizeSeller/edit/<%= sellerInformation[i].userName %>" class="btn btn-primary">Edit</a>
+                                                    <a href="/home/admin/customizeSeller/delete/<%= sellerInformation[i].userName %>" class="btn btn-danger">Delete</a> 
+                                                    <% if( sellerInformation[i].validity == 'valid'){ %> 
+                                                    <button id="seller<%= sellerInformation[i].id %>"  type="button" class="btn btn-warning" data-value=<%= sellerInformation[i].id %> >Valid</button>
+                                                    <%}else{%>
+                                                        <button id="seller<%= sellerInformation[i].id %>"  type="button" class="btn btn-warning" data-value=<%= sellerInformation[i].id %> >Invalid</button></td>
+                                                        <%} %></td>                                     
+                                            </tr>
+                                        <% } %>
+                                    </tbody>
+                                </form>
                             </table>
                         </div>
                     </div>
@@ -115,3 +117,62 @@
         </div>
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+
+<script>
+    $(document).ready(function() {
+
+
+        $('button').click(function (e) {
+                                var id =$(this).data("value") 
+                                var elementId = `#seller${id}`;
+                                       
+                                        $.ajax({  
+                                                url:'/home/admin/validitySeller',  
+                                                method:'post',  
+                                                data:{'userId':id},
+                                                contentType: "application/x-www-form-urlencoded",  
+                                                success:function(response){ 
+                                                    
+                                                    $(elementId).html(`${response.validity}`)
+                                                    
+                                                },  
+                                                error:function(response){  
+                                                    alert('server error occured')  
+                                                }  
+                                            });
+                                        
+                                    });
+
+    
+        //    $('button').click(function (e) {
+        //        var Id =$(this).data("value") 
+        //        var elementId = `#verifySeller${Id}`;
+                      
+        //                $.ajax({  
+        //                        url:'/manager/validitySeller',  
+        //                        method:'post',  
+        //                        data:{'userId':Id},
+        //                        contentType: "application/x-www-form-urlencoded",  
+        //                        success:function(response){ 
+                                   
+        //                         $(elementId).remove()
+        //                             setTimeout(()=> { 
+        //                                $('#verify').addClass('alert alert-success')
+        //                                $('.alert').append(`${response.sv}`);
+        //                                setTimeout(() => {
+        //                                    $('#verify').removeClass('alert alert-success');
+        //                                    $('#verify').empty();
+        //                                }, 1500);
+        //                             }, 200);
+        //                        },  
+        //                        error:function(response){  
+        //                            alert(response.sv)  
+        //                        }  
+        //                    });
+                       
+        //            });
+                
+                });
+   
+</script>
