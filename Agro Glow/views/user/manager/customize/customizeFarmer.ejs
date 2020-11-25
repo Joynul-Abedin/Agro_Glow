@@ -43,9 +43,7 @@
                                         <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 69px;">User Name</th>
                                         <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 67px;">Position</th>
                                         <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 67px;">Validity</th>
-                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 67px;">Action</th>
-                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 67px;">Action</th>
-                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 67px;">Action</th>
+                                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="2" aria-label="Salary: activate to sort column ascending" style="width: 67px;">Action</th>
                                     </tr>
                                 </thead>
                                 <tfoot>
@@ -57,27 +55,31 @@
                                         <th rowspan="1" colspan="1">User Name</th>
                                         <th rowspan="1" colspan="1">Position</th>
                                         <th rowspan="1" colspan="1">Validity</th>
-                                        <th rowspan="1" colspan="1">Action</th>
-                                        <th rowspan="1" colspan="1">Action</th>
-                                        <th rowspan="1" colspan="1">Action</th>
+                                        <th rowspan="1" colspan="2">Action</th>
                                     </tr>
                                 </tfoot>
-                                <tbody>     
-                                    <% for(var i = 0; i < farmerInformation.length; i++){ %>
-                                        <tr role="row" class="odd">
-                                            <td><%= farmerInformation[i].name %></td>
-                                            <td><%= farmerInformation[i].email %></td>
-                                            <td><%= farmerInformation[i].DOB %></td>
-                                            <td><%= farmerInformation[i].mobileNo %></td>
-                                            <td><%= farmerInformation[i].userName %></td>
-                                            <td><%= farmerInformation[i].userType %></td>
-                                            <td><%= farmerInformation[i].validity %></td>     
-                                            <td><a href="/home/manager/customizeFarmer/edit/<%= farmerInformation[i].userName %>" class="btn btn-primary">Edit</a></td>
-                                            <td><a href="#" class="btn btn-warning">Block</a></td>
-                                            <td><a href="/home/manager/customizeFarmer/delete/<%= farmerInformation[i].userName %>" class="btn btn-danger">Delete</a></td>                                            
-                                        </tr>
-                                    <% } %>
-                                </tbody>
+                                <form method="post">
+                                    <tbody>     
+                                        <% for(var i = 0; i < farmerInformation.length; i++){ %>
+                                            <tr role="row" class="odd" id="validity<%= farmerInformation[i].id %>">
+                                                <td><%= farmerInformation[i].name %></td>
+                                                <td><%= farmerInformation[i].email %></td>
+                                                <td><%= farmerInformation[i].DOB %></td>
+                                                <td><%= farmerInformation[i].mobileNo %></td>
+                                                <td><%= farmerInformation[i].userName %></td>
+                                                <td><%= farmerInformation[i].userType %></td>
+                                                <td><%= farmerInformation[i].validity %></td>     
+                                                <td><a href="/home/manager/customizefarmer/edit/<%= farmerInformation[i].userName %>" class="btn btn-primary">Edit</a>
+                                                    <a href="/home/manager/customizefarmer/delete/<%= farmerInformation[i].userName %>" class="btn btn-danger">Delete</a> 
+                                                    <% if( farmerInformation[i].validity == 'valid'){ %> 
+                                                    <button id="farmer<%= farmerInformation[i].id %>"  type="button" class="btn btn-warning" data-value=<%= farmerInformation[i].id %> >Valid</button>
+                                                    <%}else{%>
+                                                        <button id="farmer<%= farmerInformation[i].id %>"  type="button" class="btn btn-warning" data-value=<%= farmerInformation[i].id %> >Invalid</button></td>
+                                                        <%} %></td>                                     
+                                            </tr>
+                                        <% } %>
+                                    </tbody>
+                                </form>
                             </table>
                         </div>
                     </div>
@@ -118,3 +120,35 @@
         </div>
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+
+<script>
+    $(document).ready(function() {
+
+
+        $('button').click(function (e) {
+                                var id =$(this).data("value") 
+                                var elementId = `#farmer${id}`;
+                                       
+                                        $.ajax({  
+                                                url:'/home/manager/validityfarmer',  
+                                                method:'post',  
+                                                data:{'userId':id},
+                                                contentType: "application/x-www-form-urlencoded",  
+                                                success:function(response){ 
+                                                    
+                                                    $(elementId).html(`${response.validity}`)
+                                                    
+                                                },  
+                                                error:function(response){  
+                                                    alert('server error occured')  
+                                                }  
+                                            });
+                                        
+                                    });
+
+    
+
+                });
+   
+</script>

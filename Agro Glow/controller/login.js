@@ -1,10 +1,32 @@
 const express = require('express');
 const userModel = require.main.require('./models/userModels');
 const router = express.Router();
+const { check, validationResult} = require('express-validator'); 
 
 
 router.get('/', (req,res)=>{
 	res.render('login/login');
+});
+
+router.post('/', [				  //POST : 
+    check('user','Invalid')
+		.exists()
+		.isLength({min:1}),
+	
+    check('password','Invalid')
+		.exists()
+		.isLength({min:1}),
+        
+	] , (req, res, next)=>{
+
+		const errors = validationResult(req);
+		if (!errors.isEmpty()) {
+            // // return res.status(400).json({ errors: errors.array() });
+            const alert = errors.array();
+            res.render('login/login',{alert});
+		}else{
+			next();
+		}
 });
 
 router.post('/', (req, res)=>{

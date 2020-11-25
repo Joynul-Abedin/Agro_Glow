@@ -22,6 +22,14 @@ module.exports ={
         })
     },
 
+    checkNotificationsManager : function(callback){
+        var sql = "select * from notification where userType = 'seller' and userType = 'farmer'";
+        console.log(sql);
+        db.getResults(sql, function(status){
+            callback(status);
+        })
+    },
+
     sellerInvalid : function(sellerId, callback){
         var sql = "update users set validity = 'invalid' where id = '"+sellerId+"' ";
         console.log(sql);
@@ -32,6 +40,22 @@ module.exports ={
 
     sellerValid : function(sellerId, callback){
         var sql = "update users set validity = 'valid' where id = '"+sellerId+"' ";
+        console.log(sql);
+        db.execute(sql, function(status){
+            callback(status);
+        })
+    },
+
+    farmerInvalid : function(farmerId, callback){
+        var sql = "update users set validity = 'invalid' where id = '"+farmerId+"' ";
+        console.log(sql);
+        db.execute(sql, function(status){
+            callback(status);
+        })
+    },
+
+    farmerValid : function(farmerId, callback){
+        var sql = "update users set validity = 'valid' where id = '"+farmerId+"' ";
         console.log(sql);
         db.execute(sql, function(status){
             callback(status);
