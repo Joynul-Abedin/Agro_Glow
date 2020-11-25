@@ -26,10 +26,18 @@ router.get('/', (req, res)=>{
 			res.redirect('/home/seller');
 		}
 	});
+	userModel.getInformation(user,function(results){
+		if(results[0].userType == 'farmer'){
+			res.redirect('/home/farmer');
+		}
+	});
+	
 })
 
 
 ///////--------------------------------Admin Routes---------------------------------/////////
+
+
 
 router.get('/admin', (req, res)=>{
 	user ={
@@ -526,6 +534,38 @@ router.post('/admin/customizeFarmer/edit/:userName', (req, res)=>{
 	})  
 })
 
+/*router.post('/admin/validitySeller', (req, res)=>{​​
+	const id = req.body.userId;
+	console.log(id);
+	userModel.getUserbyid(id, function(results){​​
+		console.log(results);
+		if(results[0].validity == 'valid'){​​
+			userModel.sellerInvalid(id, function(status){​​
+				if (status) {​​
+					res.json({​​
+					validity:"Invalid"
+					}​​)
+				}​​else{​​
+					res.json({​​
+						validity:"failed"
+					}​​)
+				}​​
+			}​​);
+		}​​else{​​
+			userModel.sellerValid(id, function(status){​​
+				if (status) {​​
+					res.json({​​
+						validity:"Valid"
+					}​​)
+				}​​else{​​
+					res.json({​​
+						validity:"failed"
+					}​​)
+				}​​
+			}​​);
+		}​​
+	}​​);
+}​​)*/
 
 
 router.get('/admin/customizeFarmer/delete/:userName', (req, res)=>{
@@ -2105,5 +2145,14 @@ router.post('/seller/customizeFarmer/delete/:userName', (req, res)=>{
 })
 
 
+
+////////-------------------------------------------------- Farmer --------------------------------------------///////////
+
+
+router.get('/home/farmer/index', (req, res)=>{
+	userModel.getAllproducts(function(results){
+		res.render('user/farmer/landing-Page/index',{ productInformation : results});
+	  });
+})
 
 module.exports = router;
