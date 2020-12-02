@@ -1,7 +1,10 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800" style="text-align: center;">Tables</h1>
+    <h1 class="h3 mb-2 text-gray-800">Tables</h1>
+    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
+        For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official DataTables documentation</a>.</p>
+
     <!-- DataTales Example -->
     
 
@@ -128,7 +131,7 @@
                                 var elementId = `#seller${id}`;
                                        
                                         $.ajax({  
-                                                url:'/home/admin/validitySeller',  
+                                                url:'/home/manager/validitySeller',  
                                                 method:'post',  
                                                 data:{'userId':id},
                                                 contentType: "application/x-www-form-urlencoded",  
@@ -145,34 +148,7 @@
                                     });
 
     
-        //    $('button').click(function (e) {
-        //        var Id =$(this).data("value") 
-        //        var elementId = `#verifySeller${Id}`;
-                      
-        //                $.ajax({  
-        //                        url:'/manager/validitySeller',  
-        //                        method:'post',  
-        //                        data:{'userId':Id},
-        //                        contentType: "application/x-www-form-urlencoded",  
-        //                        success:function(response){ 
-                                   
-        //                         $(elementId).remove()
-        //                             setTimeout(()=> { 
-        //                                $('#verify').addClass('alert alert-success')
-        //                                $('.alert').append(`${response.sv}`);
-        //                                setTimeout(() => {
-        //                                    $('#verify').removeClass('alert alert-success');
-        //                                    $('#verify').empty();
-        //                                }, 1500);
-        //                             }, 200);
-        //                        },  
-        //                        error:function(response){  
-        //                            alert(response.sv)  
-        //                        }  
-        //                    });
-                       
-        //            });
-                
+
                 });
    
 </script>

@@ -1,5 +1,4 @@
 const db = require('./db');
-const bcrypt = require('bcrypt');
 
 
 module.exports ={
@@ -27,6 +26,14 @@ module.exports ={
 
     checkNotificationsManager : function(callback){
         var sql = "select * from notification where userType = 'seller' and userType = 'farmer'";
+        console.log(sql);
+        db.getResults(sql, function(status){
+            callback(status);
+        })
+    },
+
+    checkNotificationsAdmin : function(callback){
+        var sql = "select * from notification where userType = 'manager'";
         console.log(sql);
         db.getResults(sql, function(status){
             callback(status);
@@ -109,7 +116,7 @@ module.exports ={
     },
 
     createProduct : function(newProduct, callback){
-        var sql = "insert into products values (' ', '"+newProduct.productName+"', '"+newProduct.category+"', '"+newProduct.price+"', '"+newProduct.quantity+"', '"+newProduct.expDate+"', '"+newProduct.description+"', '"+newProduct.image+"')";
+        var sql = "insert into products values (' ', '"+newProduct.productName+"', '"+newProduct.category+"', '"+newProduct.price+"', '"+newProduct.quantity+"', '"+newProduct.expDate+"', '"+newProduct.description+"', '"+newProduct.imageURL+"')";
         db.execute(sql, function(status){
             callback(status);
         })

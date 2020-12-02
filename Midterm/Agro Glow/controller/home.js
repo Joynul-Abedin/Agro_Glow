@@ -498,10 +498,10 @@ router.post('/admin/customizeSeller/delete/:userName', (req, res)=>{
 
 router.get('/admin/customizeFarmer/edit/:userName', (req, res)=>{
 
-	var seller = req.params.userName;
+	var farmer = req.params.userName;
 
-	userModel.getFarmer(seller, function(results){
-		farmer = results;
+	userModel.getFarmer(farmer, function(results){
+		farmers = results;
 	})
 
 	user ={
@@ -509,7 +509,7 @@ router.get('/admin/customizeFarmer/edit/:userName', (req, res)=>{
 	}
 
 	userModel.getInformation(user, function(results){
-		res.render('user/admin/customize/edit/editFarmer', {layout : './layouts/admin-main', userInformation : results, farmerInformation : farmer});
+		res.render('user/admin/customize/edit/editFarmer', {layout : './layouts/admin-main', userInformation : results, farmerInformation : farmers});
 	  });
 })
 
@@ -525,7 +525,7 @@ router.post('/admin/customizeFarmer/edit/:userName', (req, res)=>{
 
 	console.log(req.body.name);
 
-	userModel.editSeller(user, function(status){
+	userModel.editFarmer(user, function(status){
 		if(status){
 			res.redirect('/home/admin/customizeFarmer');
 		}else{
@@ -708,7 +708,6 @@ router.get('/admin/addProduct', (req, res)=>{
 	}
 	userModel.getAllcategories(function(result){
 			category = result;
-			console.log(result);
 	})
 
 	userModel.getInformation(user, function(results){
@@ -718,22 +717,23 @@ router.get('/admin/addProduct', (req, res)=>{
 	//res.render('user/manager/addProduct');
 })
 
+
+
 router.post('/admin/addProduct', (req, res)=>{
 
-	if(category != null){
+	if(req.body.category != null){
 		newProduct = {
-			'name' 	   		: req.body.name,
-			'description'   : req.body.descrip,
-			'DOB'			: req.body.DOB,
-			'mobileNo'		: req.body.mobileNo,
-			'userName' 		: req.body.userName,
-			'password' 		: req.body.password,
-			'userType' 		: 'farmer',
-			'validity'		: '1'
+			'productName' 	: req.body.productName,
+			'description'   : req.body.description,
+			'category'		: req.body.category,
+			'expDate'		: req.body.expDate,
+			'quantity' 		: req.body.quantity,
+			'price' 		: req.body.price,
+			'imageURL' 	: req.body.productImage
 		}
 		userModel.createProduct(newProduct,function(status){
 			if(status){
-				res.redirect('/home/admin/seeProduct');
+				res.redirect('/home/admin/seeProducts');
 			}else{
 				res.redirect('/home/admin/addProduct');
 			}
@@ -755,6 +755,7 @@ router.get('/admin/seeProducts', (req, res)=>{
 	});
 })
 
+
 router.get('/admin/editProduct/:Id', (req, res)=>{
 	
 	var pId = req.params.Id;
@@ -766,37 +767,97 @@ router.get('/admin/editProduct/:Id', (req, res)=>{
 		products = results;
 	})
 	userModel.getInformation(user, function(results){
-		res.render('user/admin/seeProducts', {layout : './layouts/admin-main',userInformation : results, productInformation : products});
+		res.render('user/admin/customize/edit/editProduct', {layout : './layouts/admin-main',userInformation : results, productInformation : products});
 	});
 })
 
 router.post('/admin/editProduct/:{id}', (req, res)=>{
-	userModel.editProduct(function(results){
-		product = results;
-	})
+	if(req.body.category != 'Select Category'){
+		product = {
+			'id'			:req.params.productId,
+			'productName'	: req.body.productName,
+			'description'   : req.body.description,
+			'category'		: req.body.category,
+			'expDate'		: req.body.expDate,
+			'quantity' 		: req.body.quantity,
+			'price' 		: req.body.price,
+			'imageURL' 		: req.files.productImage.name
+		}
+
+		//console.log(req.files.productImage);
+
+		var file = req.files.productImage;
+
+	file.mv('./assets/img/'+file.name, function(error){
+		
+		if(error == null){
+			userModel.editProduct(product,function(status){
+				console.log(status)
+				if(status){
+					res.redirect('/home/admin/customizeProducts');
+				}else{
+					res.redirect('/home/admin/editProduct/:productId');
+				}
+			})
+		}else{
+			res.redirect('/home/admin/addProduct/:productId');
+		}
+	});
+
+	}else{
+			res.redirect('/home/admin/addProduct');
+	}
+})
+
+router.get('/admin/customizeProducts', (req, res)=>{
 	user ={
 		userName : req.cookies['user']
 	}
-	userModel.getInformation(user, function(results){
-		res.render('user/admin/seeProducts', {layout : './layouts/admin-main',userInformation : results, productInformation : product});
-	});
-})
-
-
-router.get('/admin/deleteProduct', (req, res)=>{
 	userModel.getAllproducts(function(results){
-		product = results;
-		//console.log(manager);
+		products = results;
 	})
-	user ={
-		userName : req.cookies['user']
-	}
-	//{layout : './layouts/main2'}
 	userModel.getInformation(user, function(results){
-		res.render('user/admin/seeProducts', {layout : './layouts/admin-main',userInformation : results, productInformation : product});
+		res.render('user/admin/seeProducts', {layout : './layouts/admin-main',userInformation : results, productInformation : products});
 	});
 })
 
+
+router.get('/admin/deleteProduct/:productId', (req, res)=>{
+
+	var id = req.params.productId;
+
+	user ={
+		userName : req.cookies['user']
+	}
+
+	userModel.getProduct(id, function(results){
+		product = results;
+		console.log(product.productName)
+	})
+
+	userModel.getInformation(user,function(results){
+		res.render('user/admin/customizeProducts/deleteProduct', {layout : './layouts/admin-main', userInformation : results, productInformation : product});
+	  });
+	  
+})
+
+router.post('/admin/deleteProduct/:productId', (req, res)=>{
+
+	product = {
+		'id'			: req.params.productId,
+	}
+
+	//console.log(product);
+
+	userModel.deleteProduct(product, function(status){
+		if(status){
+			res.redirect('/home/admin/customizeProducts/');
+		}else{
+			res.redirect('/home/admin/deleteProduct/'+product.id+'');
+		}
+	})
+
+})
 
 
 
@@ -1498,6 +1559,10 @@ router.post('/manager/systemLeave', (req, res)=>{
 
 ///home/manager/editCategory/
 
+
+
+
+
 ////////////////////////<-------manager-------->////////////////////
 
 //////////////// seller////////////////////////
@@ -1813,6 +1878,21 @@ router.post('/manager/validityFarmer', (req, res)=>{
 
 // })
 
+router.get('/admin/checkNotifications', (req, res)=>{
+	user ={
+		userName : req.cookies['user']
+	}
+
+	userModel.checkNotificationsAdmin(function(results){
+		notifications = results;
+		console.log(results);
+	})
+
+	userModel.getInformation(user, function(results){
+		res.render('user/admin/checkNotifications', {layout : './layouts/admin-main', userInformation : results, notifications : notifications});
+	  });
+
+})
 
 
 router.get('/manager/checkNotifications', (req, res)=>{
